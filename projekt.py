@@ -3,15 +3,13 @@
 import random
 import math
 
-#razred, ki definira točko
-
 class Tocka:
     def __init__(self, x, y):
         self.x = x
         self.y = y
  
 def Najbolj_leva(tocke):
-     
+
     '''
     funckija, ki v primeru, da imamo več najnižjih točk poišče najbolj levo od vseh
     '''
@@ -41,21 +39,15 @@ def orientacija(p, q, r):
         return 1
     else:
         return 2
- 
+
+# ISKANJE KONVEKSNE LUPINE 
+
 def konveksna_lupina(tocke, n):
      
     if n < 3:
         return
- 
     izbrana = Najbolj_leva(tocke)
- 
     lupina = []
-     
-    '''
-    Konveksno lupino gradi tako, da začne na najbolj levo točko in se premika v smer urinega kazalca, dokler ne doseže
-    začetne točke.
-
-    '''
 
     #Nastavimo točko p na najbolj levo in q na 0
 
@@ -70,9 +62,8 @@ def konveksna_lupina(tocke, n):
         Poiščite točko 'q', ki je takšna, da je orientacija(p, q,
         x) za vse točke 'x' v smeri urinega kazalca. Ideja
         je slediti zadnjemu obisku, ki je bil največkrat v smeri urinega kazalca.
-        Če je katera koli točka 'i' bolj proti smeri urinega kazalca
+        v kolikor je katera koli točka 'i' bolj proti smeri urinega kazalca
         kot q, potem posodobi q.
-
         '''
         q = (p + 1) % n
  
@@ -81,7 +72,6 @@ def konveksna_lupina(tocke, n):
             if(orientacija(tocke[p],
                            tocke[i], tocke[q]) == 2):
                 q = i
- 
         '''
         Sedaj je q najbolj v smeri urinega kazalca glede na p
         Za naslednjo iteracijo nastavite p kot q, tako da se q doda k
@@ -104,7 +94,6 @@ def konveksna_lupina(tocke, n):
 
 #Uporaba funkcije konveksna_lupina na množici točk, ki ima poljubno moč in točke
 # Pri izbiri točk se omejiva na interval [a,b]
-
 
 def nakljucna_mnozica(qty):
     rangeX = (-10, 10)
@@ -137,8 +126,6 @@ def ploscina(seznam_tock):
             ploscina += seznam_tock[i][0]*seznam_tock[i+1][1] - seznam_tock[i+1][0]*seznam_tock[i][1]
     print(0.5*abs(ploscina))
     return(ploscina)
-
-
 
 #### OBSEG
 
