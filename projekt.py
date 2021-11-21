@@ -4,6 +4,7 @@
 
 import random
 import math
+from numpy import mat
 import pandas as pd
 import csv
 from tqdm import tqdm
@@ -146,6 +147,8 @@ def obseg(seznam_tock):
     
     return(obseg)
 
+# 1. METODA ZA APROKSIMACIJO PLOŠČINE IN OBSEGA
+
 def razdeli_pravokotnik(a,b,m):
     seznam_pravokotnikov = []
     dolzina = a/m
@@ -244,10 +247,80 @@ def generiraj_primere(a,b,m, st_vseh):
                 koncni_rezultati += [primerjava(a,b,n,r)]
     zadnji_rezultati = pd.concat(koncni_rezultati, axis=0, ignore_index= True)
     zadnji_rezultati.index.name = 'ID'
-    zadnji_rezultati.to_csv(f'files/rezultati_{st_vseh}_tock_pri_{m}_delitvah_na_obmocju_{a}_{b}.tsv')    
+    zadnji_rezultati.to_csv(f'files/rezultati_{st_vseh}_tock_pri_{m}_delitvah_na_obmocju_{a}_{b}.tsv')   
+
+
+#2. METODA:
+
+def tezisce_vzorca(mnozica):
+    vsota_x = 0
+    vsota_y = 0
+    for i in mnozica:
+        vsota_x += i.x
+        vsota_y += i.y
+    povprecje_x = vsota_x/len(mnozica)
+    povprecje_y = vsota_y/len(mnozica)
+    return([povprecje_x, povprecje_y])
+
+def polmer(mnozica, tezisce_vzorca):
+    razdalja = 0
+    for i in mnozica:
+        razdalja_tocke = math.sqrt((i.x - tezisce_vzorca[0])**2 + (i.y - tezisce_vzorca[1])**2)
+        if razdalja_tocke >= razdalja:
+            razdalja = razdalja_tocke
+        else:
+            pass
+    return(razdalja)
+
+def ploscina_kroga(polmer):
+    ploscina = math.pi * polmer**2
+    return(ploscina)
+
+def obseg_kroga(polmer):
+    obseg = 2 * math.pi * polmer
+    return(obseg)
+
+def primerjava_s_krogom(a,b,st_vseh):
+    mnozica = nakljucna_mnozica(st_vseh,a,b)
+    kon_lup_eksaktna = konveksna_lupina(mnozica, len(mnozica))
+    ploscina_eksaktna = ploscina(kon_lup_eksaktna)
+    obseg_eksakten = obseg(kon_lup_eksaktna)
+
+    t = tezisce_vzorca(mnozica)
+    r = polmer(mnozica, t)
+    ploscina_simulirana_krog = ploscina_kroga(r)
+    
+    relativna_napaka_ploscine_krog = 100 - (abs(ploscina_simulirana_krog-ploscina_eksaktna)/ ploscina_eksaktna)*100
+
+    
+    obseg_simuliran_krog = obseg_kroga(r)
+    relativna_napaka_obseg_krog = 100 - (abs(obseg_simuliran_krog - obseg_eksakten)/obseg_eksakten)*100
+
+    
+    rezultati = {'st_vseh': [],'relativna_napaka_ploscine_krog': [], 'relativna_napaka_obseg_krog' : [] }
+    rezultati['st_vseh'] += [st_vseh]
+    rezultati['relativna_napaka_ploscine_krog'] += [relativna_napaka_ploscine_krog]
+    rezultati['relativna_napaka_obseg_krog'] += [relativna_napaka_obseg_krog]
+
+    data = pd.DataFrame(rezultati)
+    
+
+    return(data)
+
+def generiraj_primere_za_krog(a,b,st_vseh):
+    # a in b sta največji vrednosti na x in y osi
+    # najvecje st_vseh elementov v množici S
+    
+    koncni_rezultati_za_krog = [] 
+    for r in tqdm(range(50, st_vseh, 10)):
+        for j in range(0,10):
+            koncni_rezultati_za_krog += [primerjava_s_krogom(a,b,r)]
+    zadnji_rezultati = pd.concat(koncni_rezultati_za_krog, axis=0, ignore_index= True)
+    zadnji_rezultati.index.name = 'ID'
+    zadnji_rezultati.to_csv(f'files/rezultati_za_krog_{st_vseh}_tock_na_obmocju_{a}_{b}.tsv')   
 
 if __name__ == '__main__':
-
     print('delam, delam, delam, delam kot zamorc')
 
-    a = generiraj_primere(10,10,10,100)
+    #a = generiraj_primere(10,10,10,100)
+    c = generiraj_primere_za_krog(10,10,100)
