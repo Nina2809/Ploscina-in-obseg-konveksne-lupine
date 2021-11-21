@@ -95,22 +95,22 @@ def konveksna_lupina(tocke, n):
 #Uporaba funkcije konveksna_lupina na množici točk, ki ima poljubno moč in točke
 # Pri izbiri točk se omejiva na interval [a,b]
 
-def nakljucna_mnozica(qty):
-    rangeX = (-10, 10)
-    rangeY = (-10, 10)
+def nakljucna_mnozica(qty,a,b):
+    rangeX = (0, a)
+    rangeY = (0, b)
     randPoints = []
     i = 0
     while i<qty:
-        x = random.randrange(*rangeX)
-        y = random.randrange(*rangeY)
+        x = round(random.uniform(*rangeX),4)
+        y = round(random.uniform(*rangeY),4)
         randPoints.append(Tocka(x,y))
         i += 1
 
     return(randPoints)
 
-mnozica = nakljucna_mnozica(3)
+#mnozica = nakljucna_mnozica(3)
 
-kon_lup = konveksna_lupina(mnozica, len(mnozica))
+#kon_lup = konveksna_lupina(mnozica, len(mnozica))
 
 
 #### PLOŠČINA
@@ -125,7 +125,7 @@ def ploscina(seznam_tock):
         else:
             ploscina += seznam_tock[i][0]*seznam_tock[i+1][1] - seznam_tock[i+1][0]*seznam_tock[i][1]
     print(0.5*abs(ploscina))
-    return(ploscina)
+    return(0.5*abs(ploscina))
 
 #### OBSEG
 
@@ -141,3 +141,72 @@ def obseg(seznam_tock):
     print(obseg)
     return(obseg)
 
+def razdeli_pravokotnik(a,b,m):
+    seznam_pravokotnikov = []
+    dolzina = a/m
+    visina = b/m
+    for i in range(0,m):
+        for j in range(0,m):
+            A = Tocka(j*dolzina, i*visina)
+            B = Tocka((j+1)*dolzina, i*visina)
+            C = Tocka((j+1)*dolzina, (i+1)*visina)
+            D = Tocka(j*dolzina, (i+1)*visina)
+            seznam_pravokotnikov.append([[A.x,A.y],[B.x,B.y],[C.x,C.y],[D.x,D.y]])
+    print(seznam_pravokotnikov)
+    return(seznam_pravokotnikov)
+
+def razdeli_pravokotnik2(a,b,m):
+    seznam_pravokotnikov = []
+    dolzina = a/m
+    visina = b/m
+    for i in range(0,m):
+        for j in range(0,m):
+            x1 = i*dolzina
+            x2 = (i+1)*dolzina
+            y1 = j*visina
+            y2 = (j+1)*visina
+            seznam_pravokotnikov.append([x1,x2,y1,y2])
+#    print(seznam_pravokotnikov)
+    return(seznam_pravokotnikov)   
+
+#razdeli_pravokotnik2(4,4,4)
+
+def izberi_tocke(a,b,m,mnozica):
+    pravokotniki = razdeli_pravokotnik2(a,b,m)
+    izbrane = []
+    for pravokotnik in pravokotniki:
+        vsebovane = []
+        for tocka in mnozica:
+            if pravokotnik[0] <= tocka.x <= pravokotnik[1] and pravokotnik[2] <= tocka.y <= pravokotnik[3]:
+                vsebovane.append(tocka)
+            else:
+                pass
+        if len(vsebovane) == 0:
+            pass
+        else:
+            u = len(vsebovane)
+            izbrane.append(vsebovane[random.randint(0,u-1)])
+    return(izbrane)
+
+mnozica = nakljucna_mnozica(20,4,4)
+izberi_tocke(4,4,4,mnozica)
+
+def primerjava(a,b,m,st_vseh):
+    mnozica = nakljucna_mnozica(st_vseh,a,b)
+    kon_lup_eksaktna = konveksna_lupina(mnozica, len(mnozica))
+
+    izbrane = izberi_tocke(a,b,m,mnozica)
+    kon_lup_simulirana = konveksna_lupina(izbrane, len(izbrane))
+
+    ploscina_eksaktna = ploscina(kon_lup_eksaktna)
+    ploscina_simulirana = ploscina(kon_lup_simulirana)
+    napaka_ploscina = abs(ploscina_eksaktna-ploscina_simulirana)
+
+    obseg_eksakten = obseg(kon_lup_eksaktna)
+    obseg_simuliran = obseg(kon_lup_simulirana)
+    napaka_obseg = abs(obseg_eksakten-obseg_simuliran)
+
+    print(napaka_ploscina, napaka_obseg, len(izbrane))
+    return(napaka_ploscina, napaka_obseg)
+
+primerjava(10,10,100,1000)
