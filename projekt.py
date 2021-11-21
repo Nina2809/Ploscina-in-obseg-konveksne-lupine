@@ -1,7 +1,12 @@
+
+
 # ISKANJE KONVEKSNE LUPINE MNOŽICE P Z n točkami
 
 import random
 import math
+import pandas as pd
+import csv
+from tqdm import tqdm
 
 class Tocka:
     def __init__(self, x, y):
@@ -87,7 +92,7 @@ def konveksna_lupina(tocke, n):
     for vsako_tocko in lupina:
 
         seznam_tock.append([tocke[vsako_tocko].x, tocke[vsako_tocko].y])
-    print(seznam_tock)
+    
     return(seznam_tock)
  
 # Vir : https://www.geeksforgeeks.org/convex-hull-set-1-jarviss-algorithm-or-wrapping/
@@ -124,7 +129,7 @@ def ploscina(seznam_tock):
             ploscina += seznam_tock[i][0]*seznam_tock[0][1] - seznam_tock[0][0]*seznam_tock[i][1]
         else:
             ploscina += seznam_tock[i][0]*seznam_tock[i+1][1] - seznam_tock[i+1][0]*seznam_tock[i][1]
-    print(0.5*abs(ploscina))
+    
     return(0.5*abs(ploscina))
 
 #### OBSEG
@@ -138,7 +143,7 @@ def obseg(seznam_tock):
             obseg += math.sqrt((seznam_tock[i][0]-seznam_tock[0][0])**2 + (seznam_tock[i][1]-seznam_tock[0][1])**2)
         else:
             obseg += math.sqrt((seznam_tock[i][0]-seznam_tock[i+1][0])**2 + (seznam_tock[i][1]-seznam_tock[i+1][1])**2)
-    print(obseg)
+    
     return(obseg)
 
 def razdeli_pravokotnik(a,b,m):
@@ -152,7 +157,7 @@ def razdeli_pravokotnik(a,b,m):
             C = Tocka((j+1)*dolzina, (i+1)*visina)
             D = Tocka(j*dolzina, (i+1)*visina)
             seznam_pravokotnikov.append([[A.x,A.y],[B.x,B.y],[C.x,C.y],[D.x,D.y]])
-    print(seznam_pravokotnikov)
+    
     return(seznam_pravokotnikov)
 
 def razdeli_pravokotnik2(a,b,m):
@@ -201,12 +206,48 @@ def primerjava(a,b,m,st_vseh):
     ploscina_eksaktna = ploscina(kon_lup_eksaktna)
     ploscina_simulirana = ploscina(kon_lup_simulirana)
     napaka_ploscina = abs(ploscina_eksaktna-ploscina_simulirana)
+    relativna_napaka_ploscine = 100 - (abs(ploscina_simulirana-ploscina_eksaktna)/ ploscina_eksaktna)*100
 
     obseg_eksakten = obseg(kon_lup_eksaktna)
     obseg_simuliran = obseg(kon_lup_simulirana)
     napaka_obseg = abs(obseg_eksakten-obseg_simuliran)
+    relativna_napaka_obseg = 100 - (abs(obseg_simuliran - obseg_eksakten)/obseg_eksakten)*100
 
-    print(napaka_ploscina, napaka_obseg, len(izbrane))
-    return(napaka_ploscina, napaka_obseg)
+    delez_izbranih_tock = (len(izbrane)/len(mnozica))*100
 
-primerjava(10,10,100,1000)
+
+    rezultati = {'st_vseh': [], 'delez_izbranih_tock': [], 'relativna_napaka_ploscine': [], 'relativna_napaka_obseg' : [] }
+    rezultati['st_vseh'] += [st_vseh]
+    rezultati['delez_izbranih_tock'] += [delez_izbranih_tock]
+    rezultati['relativna_napaka_ploscine'] += [relativna_napaka_ploscine]
+    rezultati['relativna_napaka_obseg'] += [relativna_napaka_obseg]
+
+    data = pd.DataFrame(rezultati)
+    
+
+    return(data)
+
+
+primerjava(10,10,10,1000)
+
+primerjava(5,5,10,400)
+
+def generiraj_primere(a,b,m, st_vseh):
+    # a in b sta največji vrednosti na x in y osi
+    # m je število delitev intervala od 0 do a in od 0 do b
+    # najvecje st_vseh elementov v množici S
+    
+    koncni_rezultati = [] 
+    for r in tqdm(range(50, st_vseh, 10)):
+        for n in range(2, m, 10):
+            for j in range(0,10):
+                koncni_rezultati += [primerjava(a,b,n,r)]
+    zadnji_rezultati = pd.concat(koncni_rezultati, axis=0, ignore_index= True)
+    zadnji_rezultati.index.name = 'ID'
+    zadnji_rezultati.to_csv(f'files/rezultati_{st_vseh}_tock_pri_{m}_delitvah_na_obmocju_{a}_{b}.tsv')    
+
+if __name__ == '__main__':
+
+    print('delam, delam, delam, delam kot zamorc')
+
+    a = generiraj_primere(10,10,10,100)
