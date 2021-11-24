@@ -319,6 +319,7 @@ def generiraj_primere_za_krog(a,b,st_vseh):
     zadnji_rezultati.index.name = 'ID'
     zadnji_rezultati.to_csv(f'files/rezultati_za_krog_{st_vseh}_tock_na_obmocju_{a}_{b}.tsv')   
 
+#PRIMERJAVA 1. IN 2. METODE
 
 
 def primerjava_prve_in_druge_metode(a,b,m,st_vseh):
@@ -339,10 +340,10 @@ def primerjava_prve_in_druge_metode(a,b,m,st_vseh):
     # napake 1. metode
 
     napaka_ploscina_1 = abs(ploscina_eksaktna-ploscina_simulirana_1)
-    relativna_napaka_ploscine_1 = (abs(ploscina_simulirana_1 -ploscina_eksaktna)/ ploscina_eksaktna)*100
+    relativna_napaka_ploscine_1 = 100 - (abs(ploscina_simulirana_1 -ploscina_eksaktna)/ ploscina_eksaktna)*100
 
     napaka_obseg_1 = abs(obseg_eksakten-obseg_simuliran_1)
-    relativna_napaka_obseg_1 = (abs(obseg_simuliran_1 - obseg_eksakten)/obseg_eksakten)*100
+    relativna_napaka_obseg_1 = 100 - (abs(obseg_simuliran_1 - obseg_eksakten)/obseg_eksakten)*100
 
     delez_izbranih_tock = (len(izbrane)/len(mnozica))*100
 
@@ -367,21 +368,19 @@ def primerjava_prve_in_druge_metode(a,b,m,st_vseh):
     rezultati['relativna_napaka_obseg_krog'] += [relativna_napaka_obseg_krog]
 
     data = pd.DataFrame(rezultati)
-    print(data)
     return(data)
 
 def generiraj_primere_za_primerjavo(a,b,m,st_vseh):
     koncni_rezultati_za_primerjavo = [] 
-    for r in tqdm(range(50, st_vseh, 10)):
+    for r in tqdm(range(50, st_vseh, 50)):
         for n in range(2, m, 10):
             for j in range(0,10):
                 koncni_rezultati_za_primerjavo += [primerjava_prve_in_druge_metode(a,b,n,r)]
     zadnji_rezultati = pd.concat(koncni_rezultati_za_primerjavo, axis=0, ignore_index= True)
     zadnji_rezultati.index.name = 'ID'
-    zadnji_rezultati.to_csv(f'files/rezultati_primerjave{st_vseh}_tock_na_obmocju_{a}_{b}.tsv')
+    zadnji_rezultati.to_csv(f'files/rezultati_primerjave{st_vseh}_tock_na_obmocju_{a}_{b}.tsv', sep='\t')
      
 if __name__ == '__main__':
-    print('delam, delam, delam, delam kot zamorc')
+    print('Generiram podatke')
 
-    #a = generiraj_primere(10,10,10,100)
-    c = generiraj_primere_za_primerjavo(10,10,4,70)      
+    c = generiraj_primere_za_primerjavo(10,10,100,1000)
