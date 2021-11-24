@@ -247,9 +247,9 @@ vzorec_950_tock <- tabela_uspesnosti_vec_kot_99 %>% filter(Stevilo_vseh_tock_v_m
 povprecno_stevilo_deleza_tock_v_vzorcu_950_tock_2 <- mean(vzorec_950_tock$Delez_izbranih_tock)
 
 
-povprecja_2 <- data.frame(Stevilo_vseh_tock = c("50","100", "150", "200", "250", "300", "350", "400","500", "550", "600","650", "700", "750", "800", "850", "900", "950"), 
+povprecja_2 <- data.frame(Stevilo_vseh_tock = c("50","100", "150", "200", "250", "300", "350", "400", "450", "500", "550", "600","650", "700", "750", "800", "850", "900", "950"), 
                         Povprecno_stevilo_deleza_tock_2 = c(povprecno_stevilo_deleza_tock_v_vzorcu_50_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_100_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_150_tock_2,
-                                                          povprecno_stevilo_deleza_tock_v_vzorcu_200_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_250_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_300_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_350_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_400_tock_2,
+                                                          povprecno_stevilo_deleza_tock_v_vzorcu_200_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_250_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_300_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_350_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_400_tock_2, povprecna_napaka_vzorca_450,
                                                           povprecno_stevilo_deleza_tock_v_vzorcu_500_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_550_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_600_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_650_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_700_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_750_tock_2,
                                                           povprecno_stevilo_deleza_tock_v_vzorcu_800_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_850_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_900_tock_2, povprecno_stevilo_deleza_tock_v_vzorcu_950_tock_2))
 
@@ -264,6 +264,66 @@ graf_povprecij_2 <- ggplot(data=povprecja_2, aes(x=Stevilo_vseh_tock, y=Povprecn
 skupna_tabela <- inner_join(povprecja, povprecja_2, by="Stevilo_vseh_tock")
 
 
+# napake kroga
 
+tabela_napak_kroga <- tabela1 %>% select(c(Stevilo_vseh_tock_v_množici_S, Relativna_napaka_ploscine_2._metode, Relativna_napaka_obsega_2._metode))
 
-  
+povprecna_napaka <- mean(tabela_napak_kroga$Relativna_napaka_ploscine_2._metode)
+povprecna_napaka_obseg <- mean(tabela_napak_kroga$Relativna_napaka_obsega_2._metode)
+
+#povprecne napake, glede na velikost vzorca
+
+vzorec_50_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 50)
+povprecna_napaka_vzorca_50 <- mean(vzorec_50_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_100_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 100)
+povprecna_napaka_vzorca_100 <- mean(vzorec_100_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_150_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 150)
+povprecna_napaka_vzorca_150 <- mean(vzorec_150_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_200_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 200)
+povprecna_napaka_vzorca_200 <- mean(vzorec_200_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_250_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 250)
+povprecna_napaka_vzorca_250 <- mean(vzorec_250_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_300_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 300)
+povprecna_napaka_vzorca_300 <- mean(vzorec_300_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_350_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 350)
+povprecna_napaka_vzorca_350 <- mean(vzorec_350_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_400_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 400)
+povprecna_napaka_vzorca_400 <- mean(vzorec_400_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_450_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 450)
+povprecna_napaka_vzorca_450 <- mean(vzorec_450_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_500_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 500)
+povprecna_napaka_vzorca_500 <- mean(vzorec_500_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_550_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 550)
+povprecna_napaka_vzorca_550 <- mean(vzorec_550_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_600_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 600)
+povprecna_napaka_vzorca_600 <- mean(vzorec_600_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_650_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 650)
+povprecna_napaka_vzorca_650 <- mean(vzorec_650_krog$Relativna_napaka_ploscine_2._metode)
+
+vzorec_700_krog <- tabela_napak_kroga %>% filter(Stevilo_vseh_tock_v_množici_S == 700)
+povprecna_napaka_vzorca_700 <- mean(vzorec_700_krog$Relativna_napaka_ploscine_2._metode)
+
+napake_kroga_glede_na_velikost_vzorca <- data.frame(Stevilo_vseh_tock = c("50","100", "150", "200", "250", "300", "350", "400","450", "500", "550", "600","650", "700"), Povprecna_napaka_ploscine = c(povprecna_napaka_vzorca_50,
+ povprecna_napaka_vzorca_100, povprecna_napaka_vzorca_150, povprecna_napaka_vzorca_200, povprecna_napaka_vzorca_250, povprecna_napaka_vzorca_300, povprecna_napaka_vzorca_350, povprecna_napaka_vzorca_400, povprecna_napaka_vzorca_450, povprecna_napaka_vzorca_500,
+ povprecna_napaka_vzorca_550, povprecna_napaka_vzorca_600, povprecna_napaka_vzorca_650, povprecna_napaka_vzorca_700))                           
+
+graf_napak_ploščine <- ggplot(data=napake_kroga_glede_na_velikost_vzorca, aes(x=Stevilo_vseh_tock, y=Povprecna_napaka_ploscine)) + 
+  geom_point(color=rgb(0.8,0.4,0.1,0.7)) + 
+  geom_line(color=rgb(0.8,0.4,0.1,0.7)) + 
+  geom_path() +
+  xlab('Število vseh točk v množici S') + 
+  ylab('Povprečna napaka aproksimirane ploščine') +
+  ggtitle('Povprečne napake pri različnih velikostih vzorca') +
+  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
