@@ -373,14 +373,15 @@ def primerjava_prve_in_druge_metode(a,b,m,st_vseh):
 def generiraj_primere_za_primerjavo(a,b,m,st_vseh):
     koncni_rezultati_za_primerjavo = [] 
     for r in tqdm(range(50, st_vseh, 50)):
-        for n in range(2, m, 10):
-            for j in range(0,10):
+        for n in range(10, m, 10):
+            for j in range(0,1000):
                 koncni_rezultati_za_primerjavo += [primerjava_prve_in_druge_metode(a,b,n,r)]
     zadnji_rezultati = pd.concat(koncni_rezultati_za_primerjavo, axis=0, ignore_index= True)
     zadnji_rezultati.index.name = 'ID'
-    zadnji_rezultati.to_csv(f'files/rezultati_primerjave{st_vseh}_tock_na_obmocju_{a}_{b}.tsv', sep='\t')
+    zadnji_rezultati.to_csv(f'Analiza_modelov/files/rezultati_primerjave{st_vseh}_tock_na_obmocju_{a}_{b}_pri{j}_iteracijah.tsv', sep='\t')
      
 if __name__ == '__main__':
     print('Generiram podatke')
 
-    c = generiraj_primere_za_primerjavo(10,10,100,1000)
+    #c = generiraj_primere_za_primerjavo(10,10,100,1000)
+    a = generiraj_primere_za_primerjavo(10,10,101,1001)     

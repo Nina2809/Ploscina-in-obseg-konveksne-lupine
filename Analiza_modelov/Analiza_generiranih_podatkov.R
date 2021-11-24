@@ -270,9 +270,20 @@ graf_povprecij_2 <- ggplot(data=povprecja_2, aes(x=Stevilo_vseh_tock, y=Povprecn
   ggtitle('Primerjava povprečnega deleža izbranih točk \n za 99% natančnost metode') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
-skupna_tabela <- inner_join(povprecja, povprecja_2, by="Stevilo_vseh_tock") %>% pivot_longer(-c(Stevilo_vseh_tock), names_to = "Povprečni_delež_točk", values_to = "Vrednosti")
+
+#izbira podatkov, kjer je uspešnost več kot 99,9%
+
+tabela_uspesnosti_vec_kot_99.9 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspešnost_izracunanega_obsega_1._metode))%>% 
+  filter(Uspešnost_izracunane_ploscine_1._metode >= 99.9) %>%
+  group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
+  rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
+  
+skupna_tabela_1 <- inner_join(povprecja, povprecja_2,by="Stevilo_vseh_tock")
+skupna_tabela <- inner_join(skupna_tabela_1, tabela_uspesnosti_vec_kot_99.9, by="Stevilo_vseh_tock")%>% 
+pivot_longer(-c(Stevilo_vseh_tock), names_to = "Povprečni_delež_točk", values_to = "Vrednosti") 
 skupna_tabela$Povprečni_delež_točk <- sub("Povprecno_stevilo_deleza_tock_2", "Povprečni delež točk v vzorcu za 99% natančnost", skupna_tabela$Povprečni_delež_točk)
 skupna_tabela$Povprečni_delež_točk <- sub("Povprecno_stevilo_deleza_tock", "Povprečni delež točk v vzorcu za 90% natančnost", skupna_tabela$Povprečni_delež_točk)
+skupna_tabela$Povprečni_delež_točk <- sub("Delez_tock", "Povprečni delež točk v vzorcu za 99,9% natančnost", skupna_tabela$Povprečni_delež_točk)
 
 #graf za število točk v vzorcu za različne natančnosti
 
@@ -281,7 +292,7 @@ graf_različnih_deležev <- skupna_tabela %>% ggplot(aes(x=Stevilo_vseh_tock, y=
   geom_line() +
   xlab('Število vseh točk v množici S') + 
   ylab('Povprečni delež točk v vzorcu') +
-  ggtitle('Primerjava povprečnega deleža izbranih točk \n za 90% in 99% natančnost metode') +
+  ggtitle('Primerjava povprečnega deleža izbranih točk \n za 90%, 99% in 99,9% natančnost 1. metode \n pri aproksimaciji ploščine konveksne lupine') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
 # napake kroga
