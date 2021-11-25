@@ -1,0 +1,87 @@
+---
+title: "Poročilo projekta - Aproksimacija ploščine in obsega konveksne lupine"
+author: "Nina Velkavrh in Ajda Majhenič"
+output:
+  html_document: default
+  pdf_document:
+    includes:
+      in_header: lib/styles.sty
+    latex_engine: xelatex
+runtime: shiny
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r Analiza_modelov, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+source("Analiza_generiranih_podatkov.r", encoding="UTF-8")
+```
+
+### Uvod - Definicija konveksne lupine
+
+
+
+Podmnožica $T$ v $\mathbb{R}^2$ je konveksna, če lahko poljubni točki $A$ in $B$ v $T$  povežemo z daljico, ki je v celoti vsebovana v množici $T$.
+
+
+Naj bo $S$ končna množica točk v ravnini. Konveksna lupina je najmanjša konveksna množica, ki vsebuje $S$.
+
+Z drugimi besedami mejo konveksne lupine tvori konveksni poligon, katerega ogljišča so točke množice $S$, robovi pa so odseki, ki povezujejo pare točk množice $S$. Označimo konveksni mnogokotnih s $CH(S)$.
+
+### Opis problema
+
+V projektni nalogi sva se ukvarjali z zelo pogostim problemom geometrije in sicer konstruiranje konveksne lupine s končno množico točk v ravnini. Osredotočili sva se predvsem na izračun njene ploščine in obsega. Predpostavljali sva, da imamo konveksno lupino množice $P$, znotraj katere je $n$ točk. 
+Sprva sva implementirali znan Jarvisovega algoritem za določitev konveksne lupine množice S z n točkami, nato sva izračunali eksakten obseg in ploščino. V glavnem delu projekta sva modelirali 2 metodi za njuno aproksimacijo. Dobljene ploščine in obsege, sva med sabo primerjali in zelo hitro ugotovili, da je 2. metoda precej slabša kot 1., saj je le ta vračala precej večje napake kot 1.. Doblejene rezultate sva primerjali tudi z dejanskimi vrednostmi obsega in ploščine. Zanimalo naju je koliko elementov v vzorcu (podmnožici množice S) potrebujeva, da dobiva približek z natančnostjo 90\% , 99\% in 99,9\% ter ali ima pri tem število točk kakšno vlogo.
+
+### Opis algoritma za določitev konveksne lupine množice S z n točkami
+
+### Opis 1. metode
+
+### Opis 2. metode
+
+### Statistično modeliranje v programu r
+
+#### Obdelava podatkov v programu r
+
+Podakte sva uvozili v program r in jih statistično obdelali. Med analiziranjem rezultatov naju je zanimalo:
+
+- Koliko je povprečni delež točk v vzorcu 1. modela, ki ga potrebujeva za 90\% , 99\% in 99,9\% natančnost pri različnih velikostih osnovne množice S,
+- kako na rezultate modela 1.vpliva različna razdelitev območja pri fiksnem številu točk,
+- ali in kdaj je mogoče tudi z 2. metodo dobiti 90\% , 99\% in 99,9\% natančnost,
+- kako se razlikujejo rezultati posamezne metode glede na različno število točk v množici S,
+
+
+### Rezultati:
+
+#### Povprečni delež točk za 90\% , 99\% in 99,9\% natančnost 1. modela pri izračunu ploščine in obsega pri različnih močeh množice S
+
+```{r graf_razlicnih_delezev, echo=FALSE, message=FALSE, fig.align='center'}
+print(graf_razlicnih_delezev)
+```
+
+dodali bova graf za aproksimacijo obsega
+
+#### Vpliv razdelitve območja na rezultate 1. metode
+
+dodati morva graf
+
+#### 2. metoda in njeno uspešnost
+
+#### Primerjava rezultatov 1. in 2. metode pri različnih močeh množice S
+
+```{r graf_napak_2.metode, echo=FALSE, message=FALSE, fig.align='center'}
+print(graf_napak_2.metode)
+print(graf_napak_1.metode)
+```
+
+ni uredu --- raje glede na delitev območja (popravi)
+```{r shiny}
+shinyAppDir("Shiny", options=list(width="100%", height=600, echo=FALSE, message=FALSE))
+```
+
+
+## Zaključek in možne izboljšave
+
+
+
