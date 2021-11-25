@@ -18,6 +18,9 @@ tabela1 <- read_table("files/rezultati_primerjave1000_tock_na_obmocju_10_10.tsv"
 
 tabela2 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode))
 
+
+# USPEŠNOSTI ZA PLOŠČINO
+
 tabela_uspesnosti_vec_kot_90 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode))%>% 
   filter(Uspesnost_izracunane_ploscine_1._metode >= 90) %>%
   group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
@@ -59,11 +62,48 @@ skupna_tabela$Povprečni_delež_točk <- sub("Delez_tock", "Povprečni delež to
 graf_razlicnih_delezev <- skupna_tabela %>% ggplot(aes(x=Stevilo_vseh_tock, y=Vrednosti, palette="Pastel1", col=Povprečni_delež_točk)) + 
   geom_point()+
   geom_line() +
+  scale_x_continuous(breaks = 50*0:950) +
+  scale_y_continuous(breaks = 1*0:100) +
   xlab('Število vseh točk v množici S') + 
   ylab('Povprečni delež točk v vzorcu') +
   ggtitle('Primerjava povprečnega deleža izbranih točk \n za 90%, 99% in 99,9% natančnost 1. metode \n pri aproksimaciji ploščine konveksne lupine') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
+#USPEŠNOSTI ZA OBSEG
+
+tabela_uspesnosti_obseg_90 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunane_ploscine_1._metode))%>% 
+  filter(Uspesnost_izracunanega_obsega_1._metode >= 90) %>%
+  group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
+  rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
+
+tabela_uspesnosti_obseg_99 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunane_ploscine_1._metode))%>% 
+  filter(Uspesnost_izracunanega_obsega_1._metode >= 99) %>%
+  group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
+  rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
+
+tabela_uspesnosti_obseg_99.9 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunane_ploscine_1._metode))%>% 
+  filter(Uspesnost_izracunanega_obsega_1._metode >= 99.9) %>%
+  group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
+  rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
+
+skupna_tabela_1_obseg <- inner_join(tabela_uspesnosti_obseg_90,tabela_uspesnosti_obseg_99,by="Stevilo_vseh_tock")
+skupna_tabela_obseg <- inner_join(skupna_tabela_1_obseg , tabela_uspesnosti_obseg_99.9, by="Stevilo_vseh_tock")%>% 
+  pivot_longer(-c(Stevilo_vseh_tock), names_to = "Povprečni_delež_točk", values_to = "Vrednosti") 
+skupna_tabela_obseg$Povprečni_delež_točk <- sub("Delez_tock.y", "Povprečni delež točk v vzorcu za 99% natančnost", skupna_tabela_obseg$Povprečni_delež_točk)
+skupna_tabela_obseg$Povprečni_delež_točk <- sub("Delez_tock.x", "Povprečni delež točk v vzorcu za 90% natančnost", skupna_tabela_obseg$Povprečni_delež_točk)
+skupna_tabela_obseg$Povprečni_delež_točk <- sub("Delez_tock", "Povprečni delež točk v vzorcu za 99,9% natančnost", skupna_tabela_obseg$Povprečni_delež_točk)
+
+#graf za število točk v vzorcu za različne natančnosti - OBSEG
+
+graf_razlicnih_delezev_obseg <- skupna_tabela_obseg %>% ggplot(aes(x=Stevilo_vseh_tock, y=Vrednosti, palette="Pastel1", col=Povprečni_delež_točk)) + 
+  geom_point()+
+  geom_line() +
+  xlab('Število vseh točk v množici S') + 
+  ylab('Povprečni delež točk v vzorcu') +
+  scale_x_continuous(breaks = 50*0:950) +
+  scale_y_continuous(breaks = 1*0:100) +
+  ggtitle('Primerjava povprečnega deleža izbranih točk \n za 90%, 99% in 99,9% natančnost 1. metode \n pri aproksimaciji obsega konveksne lupine') +
+  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 # napake kroga
 
 tabela_napak_kroga <- tabela1 %>% select(c(Stevilo_vseh_tock_v_množici_S, Relativna_napaka_ploscine_2._metode, Relativna_napaka_obsega_2._metode))
@@ -93,6 +133,8 @@ graf_napak_1.metode <- napake_za_1._metodo %>% ggplot(aes(x=Stevilo_vseh_tock_v_
   geom_point()+
   xlab('Število vseh točk v množici S') + 
   ylab('Povprečna napaka aproksimacije') +
+  scale_x_continuous(breaks = 50*0:950) +
+  scale_y_continuous(breaks = 0.5*0:20) +
   ggtitle('Povprečne napake aproksimacije 1. metode pri različnih velikostih vzorca') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
@@ -114,6 +156,22 @@ graf_napak_2.metode <- napake_za_2._metodo %>% ggplot(aes(x=Stevilo_vseh_tock_v_
   geom_point()+
   xlab('Število vseh točk v množici S') + 
   ylab('Povprečna napaka aproksimacije') +
+  scale_x_continuous(breaks = 50*0:950) +
+  scale_y_continuous(breaks = 5*0:75) +
   ggtitle('Povprečne napake aproksimacije 2. metode pri različnih velikostih vzorca') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
+
+#USPESNOST 2. METODE - OBSEG
+
+tabela_uspesnosti_vec_kot_90_krog <- tabela1 %>% select(-c(ID, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode, Uspesnost_izracunane_ploscine_1._metode ))%>% 
+  filter(Relativna_napaka_obsega_2._metode <= 0.1) %>%
+  group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
+  rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
+
+#PLOŠČINA
+
+PL_90_krog <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Uspesnost_izracunanega_obsega_1._metode, Uspesnost_izracunane_ploscine_1._metode ))%>% 
+  filter(Relativna_napaka_ploscine_2._metode <= 0.1) %>%
+  group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
+  rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
 
