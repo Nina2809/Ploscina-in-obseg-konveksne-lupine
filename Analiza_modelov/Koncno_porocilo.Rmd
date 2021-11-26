@@ -55,6 +55,10 @@ Podakte sva uvozili v program r in jih statistično obdelali. Med analiziranjem 
 
 #### Povprečni delež točk za 90\% , 99\% in 99,9\% natančnost 1. modela pri izračunu ploščine in obsega pri različnih močeh množice S
 
+Ob začetku analize podatkov sva si odgovorili na vprašanje kakšen delež točk je potreben za 90\% , 99\% in 99,9\% natančnost 1. modela. Program je zgeneriral točke na območju [0,10] x [0,10], pri 100 delitvah enega intervala - torej mreža 10000 kvadratov, pri različnih močeh množice S. Sprva sva podatke generirali tako, da se je za vsako moč množice S algoritem ponovil stokrat, ker sva pri takem številu ponovitev ugotovili, da obstajajo odstopanja pri deležih, sva se odločili, da algoritem poženeva raje tisočkrat za vsako moč množice S. Generiranje podatkov je sicer trajalo kar nekaj časa, a sva kasneje z analizo ugotovili, da je tovrstn način bolj reprezentativen. Rezultate zadnjega poskusa prikazujeta spodja grafa. Opazi se, da funkciji nimata nenavadnih odstopanj. To, da ne opazimo odstopanj se zdi logično, saj se pri večjem številu iteracij izračunana povprečna vrednost deležev točk, ki je potrebna za željeno natančnost bolj približuje pravi povprečni vrednosti. Iz spodnjih grafov je moč opaziti, da se povprečni delež točk potrebnih za željeno natančnost, zmanjšuje z večanjem moči množice S. Videno je verjetno posledica tega, da je območje glede na količino točk v večjih množicah precej majhno in so posledično točke zelo gosto razporejene po območju. Kot omenjeno model 1 iz vsakega dela mreže na katero je razdeljen kvadrat [0,10] x [0,10], vzame le 1 točko oziroma nobene, če celica nima točke množice S. Posledica tega je, da so neizbrane točke verjetno zelo blizu izbranim in se rezultati aproksimacije ne razlikujejo bistveno od eksaktnih vrednosti ploščin in obsega. 
+
+\newline Grafa prikazujeta potrebne deleže točk za željene natančnosti aproksimacije obsega in ploščine vidimo lahko, da so potrebni deleži za obseg le nekaj odstotnih točk manj kot potrebni deleži za ploščino. 
+
 ```{r graf_razlicnih_delezev, echo=FALSE, message=FALSE,  fig.show="hold", out.width="50%"}
 print(graf_razlicnih_delezev)
 print(graf_razlicnih_delezev_obseg)
@@ -65,13 +69,21 @@ print(graf_razlicnih_delezev_obseg)
 
 dodati morva graf
 
-#### 2. metoda in njeno uspešnost
+#### 2. metoda in njena uspešnost
+
+```{r graf_napak_za_krog, echo=FALSE, message=FALSE,  fig.align='center'}
+print(graf_napak_za_krog)
+```
 
 #### Primerjava rezultatov 1. in 2. metode pri različnih močeh množice S
 
+Spodnja grafa prikazujeta povprečne rezultate obeh metod pri tisočih ponovitvah metod za vako moč množice S. Tudi pri spodnjih grafih sva sprva poskusili algoritem ponoviti le stokrat za vsako moč množice, a je prišlo tudi tu do precejšnih odstopanj. Razlog odstopanj je podoben kot pri izračunu potrebnih deležev. Torej, da se pri večjem številu ponovitev modela izračunana povprečna vrednost napake za vsako moč množice bolj približuje pravi napaki. Opazimo lahko, da so napake 2. metode bistveno večje, kot napake 1. metode. Razlog za to je, da 2. metoda vzame za polmer kroga točko, ki je najbolj oddaljena od težišča (povprečja koordinat točk), ta razdalja je lahko v primeru, da je večina točk zgoščena okoli neke vrednosti in le majhen delež točk popolnoma drugje, precej velika. Ta majhen delež točk, ki se nahaja stran od večine ne prispeva veliko pri izračunu povprečja koordinat, zato se težišče nahaja bližje območju kjer je večji delež točk množice S. Posledično bo krog vzel precej večje območje, kot je konveksna lupina te množice in bojo napake aproksimacije zelo velike. Podoben razmislek, kot smo ga uporabili pri razlagi, zakaj je za večje množice potreben manjši delež točk za željeno točnosti, lahko uporabimo tudi tu, ko opazimo, da se napake 2. metode manjšajo z večjim številom točk množice S. Na območju [0,10] x [0,10] je namreč zelo verjetno, da bojo točke večjih množic bolj enakomerno porazdeljene po območju in bo krog posledično manj odstopal od dejanske konveksne lupine. Zanimiv podatek, ki sva ga opazili je, da na neki toči napaka ne pade pod 55\% za ploščino in 10\% za obseg. Razlog tega je verjetno ta, da se z večanjem vzorca povečuje verjetnost, da bo najbolj oddaljena točka od težišča blizu roba, težišče pa blizu sredini kvadrata in bo s tem krog očrtan krog kvadrata. 
+
+\newline Pri grafu, ki prikazuje povprečne napake 1. metode lahko opazimo, da so napake med 0 in 0.15, a se z večanjem vzorca povečujejo. Slednje se dogaja zato, ker je pri izbiri točk pri manjših močeh množice bolj verjetno, da so izbrane točke ravno točke, ki sestavljajo konveksno lupino. Medtem, ko gostota razporeditve točk večjih množic S vpliva na to, da je verjetnost, da izberemo ravno točke ovojnice manjša. 
+
 ```{r graf_napak_2.metode, echo=FALSE, message=FALSE, fig.show="hold", out.width="50%"}
-print(graf_napak_2.metode)
 print(graf_napak_1.metode)
+print(graf_napak_2.metode)
 ```
 
 ni uredu --- raje glede na delitev območja (popravi)
