@@ -9,19 +9,19 @@ library(gridExtra)
 
 #TABELA 1 - območje: [1,10] x [1,10], delitev območja do 100 s korakom 10, do 950 tock v množici S 
 
-stolpci1 <- c("ID", "Stevilo_vseh_tock_v_množici_S", "Delez_izbranih_tock", "Uspesnost_izracunane_ploscine_1._metode", "Uspesnost_izracunanega_obsega_1._metode", "Relativna_napaka_ploscine_2._metode", "Relativna_napaka_obsega_2._metode")
-tabela1 <- read_table("files/rezultati_primerjave1001_tock_na_obmocju_10_10_pri999_iteracijah.tsv", col_names = stolpci1, skip = 1,
+stolpci1 <- c("ID", "Stevilo_vseh_tock_v_množici_S", "Delez_izbranih_tock", "Uspesnost_izracunane_ploscine_1._metode", "Uspesnost_izracunanega_obsega_1._metode", "Relativna_napaka_ploscine_2._metode", "Relativna_napaka_obsega_2._metode", "m")
+tabela1 <- read_table("files/rezultati_primerjave1001_tock_na_obmocju_10_10_pri999_iteracijah_in_101_delitvah_obmocja.tsv", col_names = stolpci1, skip = 1,
                     locale=locale(encoding = "Windows-1250"))
 
 
 # izbira podatkov, kjer je uspešnost več kot 90%
 
-tabela2 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode))
+tabela2 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode, m))
 
 
 # USPEŠNOSTI ZA PLOŠČINO
 
-tabela_uspesnosti_vec_kot_90 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode))%>% 
+tabela_uspesnosti_vec_kot_90 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode, m))%>% 
   filter(Uspesnost_izracunane_ploscine_1._metode >= 90) %>%
   group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
   rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
@@ -37,7 +37,7 @@ graf_povprecij_2 <- ggplot(data=tabela_uspesnosti_vec_kot_90, aes(x=Stevilo_vseh
 
 # izbira podatkov, kjer je uspešnost več kot 99%
 
-tabela_uspesnosti_vec_kot_99 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode))%>% 
+tabela_uspesnosti_vec_kot_99 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode, m))%>% 
   filter(Uspesnost_izracunane_ploscine_1._metode >= 99) %>%
   group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
   rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
@@ -45,7 +45,7 @@ tabela_uspesnosti_vec_kot_99 <- tabela1 %>% select(-c(ID, Relativna_napaka_obseg
 
 #izbira podatkov, kjer je uspešnost več kot 99,9%
 
-tabela_uspesnosti_vec_kot_99.9 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode))%>% 
+tabela_uspesnosti_vec_kot_99.9 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode, m))%>% 
   filter(Uspesnost_izracunane_ploscine_1._metode >= 99.9) %>%
   group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
   rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
@@ -71,17 +71,17 @@ graf_razlicnih_delezev <- skupna_tabela %>% ggplot(aes(x=Stevilo_vseh_tock, y=Vr
 
 #USPEŠNOSTI ZA OBSEG
 
-tabela_uspesnosti_obseg_90 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunane_ploscine_1._metode))%>% 
+tabela_uspesnosti_obseg_90 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunane_ploscine_1._metode, m))%>% 
   filter(Uspesnost_izracunanega_obsega_1._metode >= 90) %>%
   group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
   rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
 
-tabela_uspesnosti_obseg_99 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunane_ploscine_1._metode))%>% 
+tabela_uspesnosti_obseg_99 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunane_ploscine_1._metode, m))%>% 
   filter(Uspesnost_izracunanega_obsega_1._metode >= 99) %>%
   group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
   rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
 
-tabela_uspesnosti_obseg_99.9 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunane_ploscine_1._metode))%>% 
+tabela_uspesnosti_obseg_99.9 <- tabela1 %>% select(-c(ID, Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunane_ploscine_1._metode, m))%>% 
   filter(Uspesnost_izracunanega_obsega_1._metode >= 99.9) %>%
   group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
   rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
@@ -163,35 +163,33 @@ graf_napak_2.metode <- napake_za_2._metodo %>% ggplot(aes(x=Stevilo_vseh_tock_v_
 
 #USPESNOST 2. METODE - OBSEG
 
-tabela_uspesnosti_vec_kot_90_krog <- tabela1 %>% select(-c(ID, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode, Uspesnost_izracunane_ploscine_1._metode ))%>% 
+tabela_uspesnosti_vec_kot_90_krog <- tabela1 %>% select(-c(ID, Relativna_napaka_ploscine_2._metode, Uspesnost_izracunanega_obsega_1._metode, Uspesnost_izracunane_ploscine_1._metode, m ))%>% 
   filter(Relativna_napaka_obsega_2._metode <= 0.1) %>%
   group_by(Stevilo_vseh_tock_v_množici_S)%>% summarise(Delez_tock = mean(Delez_izbranih_tock)) %>%
   rename( Stevilo_vseh_tock = Stevilo_vseh_tock_v_množici_S )
 
 #PLOŠČINA
 
-stolpci3 <- c("ID", "Stevilo_vseh_tock_v_množici_S", "Relativna_napaka_ploscine_2._metode", "Relativna_napaka_obsega_2._metode")
-tabela3 <- read_table("files/rezultati_za_krog_51_tock_na_obmocju_10_10.tsv", col_names = stolpci3, skip=1,
-                      locale=locale(encoding = "Windows-1250"))
 
-PL_krog <- tabela3 %>% select(-c(ID, Relativna_napaka_obsega_2._metode)) %>%
-                                group_by(Stevilo_vseh_tock_v_množici_S) %>% summarise(povprecna_napaka_pl_krog = mean(Relativna_napaka_ploscine_2._metode))
-  
-O_krog <- tabela3 %>% select(-c(ID, Relativna_napaka_ploscine_2._metode )) %>%
-  group_by(Stevilo_vseh_tock_v_množici_S) %>% summarise(povprecna_napaka_o_krog = mean(Relativna_napaka_obsega_2._metode))
 
-krog_povp_napake <- inner_join(PL_krog, O_krog, by = "Stevilo_vseh_tock_v_množici_S")
+### primerjava uspešnosti 2. metode v odvisnosti m
 
-krog_p_n <- krog_povp_napake %>% pivot_longer(-c(Stevilo_vseh_tock_v_množici_S), names_to = "Napaka", values_to = "Vrednosti_napak")
+tabela_3 <- tabela1 %>% select(Stevilo_vseh_tock_v_množici_S, Delez_izbranih_tock, Uspesnost_izracunane_ploscine_1._metode, m) %>%
+  group_by(Stevilo_vseh_tock_v_množici_S, m) %>% summarise(Napake = mean(Uspesnost_izracunane_ploscine_1._metode))
+tabela_3$m <- as.character(tabela_3$m)
+tabela_3 <- tabela_3 %>% rename("Število_delitev" = m)
 
-krog_p_n$Napaka <- sub("povprecna_napaka_o_krog", "Povprecna napaka 2. metode pri aproksimaciji obsega", krog_p_n$Napaka)
-krog_p_n$Napaka <- sub("povprecna_napaka_pl_krog", "Povprecna napaka 2. metode pri aproksimaciji ploščine",krog_p_n$Napaka )
 
-graf_napak_za_krog <- krog_p_n %>% ggplot(aes(x=Stevilo_vseh_tock_v_množici_S, y=Vrednosti_napak , palette="Pastel1", col=Napaka)) + 
-  geom_line() + 
+
+graf_m <- tabela_3 %>% ggplot(aes(x=Stevilo_vseh_tock_v_množici_S, y=Napake, palette="Dark2", color=Število_delitev )) + 
   geom_point()+
+  scale_color_discrete(breaks=c("10", "20", "30", "40", "50", "60", "70", "80", "90", "100")) + 
   xlab('Število vseh točk v množici S') + 
-  ylab('Povprečna napaka aproksimacije') +
+  ylab('Povprečna uspešnost aproksimacije') +
   scale_x_continuous(breaks = 50*0:1000) +
-  ggtitle('Povprečne napake aproksimacije 2. metode pri različnih velikostih vzorca') +
+  scale_y_continuous(breaks = 5*0:75) +
+  ggtitle('Povprečne uspešnost aproksimacije ploščine 2. metode pri različnih močeh množice S \n in pri različnih delitvah območja') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
+
+
+

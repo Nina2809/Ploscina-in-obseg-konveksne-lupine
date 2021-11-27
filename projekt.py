@@ -112,7 +112,7 @@ def nakljucna_mnozica(qty,a,b):
         randPoints.append(Tocka(x,y))
         i += 1
 
-    return(randPoints)
+    return(randPoints) 
 
 #mnozica = nakljucna_mnozica(3)
 
@@ -247,10 +247,20 @@ def generiraj_primere(a,b,m, st_vseh):
                 koncni_rezultati += [primerjava(a,b,n,r)]
     zadnji_rezultati = pd.concat(koncni_rezultati, axis=0, ignore_index= True)
     zadnji_rezultati.index.name = 'ID'
-    zadnji_rezultati.to_csv(f'files/rezultati_{st_vseh}_tock_pri_{m}_delitvah_na_obmocju_{a}_{b}.tsv')   
+    zadnji_rezultati.to_csv(f'Analiza_modelov/files/rezultati_{st_vseh}_tock_pri_{m}_delitvah_na_obmocju_{a}_{b}.tsv', sep='\t')   
 
 
 #2. METODA:
+def podmnozica_nakljucne_mnozice_krog(mnozica, k):
+
+    seznam = []
+    while len(seznam) < k:
+        i = random.randint(0, len(mnozica)-1)
+        if mnozica[i] not in seznam:
+            seznam.append(mnozica[i])
+        else:
+            pass
+    return(seznam)
 
 def tezisce_vzorca(mnozica):
     vsota_x = 0
@@ -280,6 +290,7 @@ def obseg_kroga(polmer):
     obseg = 2 * math.pi * polmer
     return(obseg)
 
+
 def primerjava_s_krogom(a,b,st_vseh):
     mnozica = nakljucna_mnozica(st_vseh,a,b)
     kon_lup_eksaktna = konveksna_lupina(mnozica, len(mnozica))
@@ -290,14 +301,14 @@ def primerjava_s_krogom(a,b,st_vseh):
     r = polmer(mnozica, t)
     ploscina_simulirana_krog = ploscina_kroga(r)
     
-    relativna_napaka_ploscine_krog = 100 - (abs(ploscina_simulirana_krog-ploscina_eksaktna)/ ploscina_eksaktna)*100
+    relativna_napaka_ploscine_krog = (abs(ploscina_simulirana_krog-ploscina_eksaktna)/ ploscina_eksaktna)*100
 
     
     obseg_simuliran_krog = obseg_kroga(r)
-    relativna_napaka_obseg_krog = 100 - (abs(obseg_simuliran_krog - obseg_eksakten)/obseg_eksakten)*100
+    relativna_napaka_obseg_krog = (abs(obseg_simuliran_krog - obseg_eksakten)/obseg_eksakten)*100
 
     
-    rezultati = {'st_vseh': [],'relativna_napaka_ploscine_krog': [], 'relativna_napaka_obseg_krog' : [] }
+    rezultati = {'st_vseh': [],'relativna_napaka_ploscine_krog': [], 'relativna_napaka_obseg_krog' : []}
     rezultati['st_vseh'] += [st_vseh]
     rezultati['relativna_napaka_ploscine_krog'] += [relativna_napaka_ploscine_krog]
     rezultati['relativna_napaka_obseg_krog'] += [relativna_napaka_obseg_krog]
@@ -312,12 +323,55 @@ def generiraj_primere_za_krog(a,b,st_vseh):
     # najvecje st_vseh elementov v množici S
     
     koncni_rezultati_za_krog = [] 
-    for r in tqdm(range(50, st_vseh, 10)):
-        for j in range(0,10):
+    for r in tqdm(range(2, st_vseh, 5)):
+        for j in range(0,2):
             koncni_rezultati_za_krog += [primerjava_s_krogom(a,b,r)]
     zadnji_rezultati = pd.concat(koncni_rezultati_za_krog, axis=0, ignore_index= True)
     zadnji_rezultati.index.name = 'ID'
-    zadnji_rezultati.to_csv(f'files/rezultati_za_krog_{st_vseh}_tock_na_obmocju_{a}_{b}.tsv')   
+    zadnji_rezultati.to_csv(f'Analiza_modelov/files/rezultati_za_krog_{st_vseh}_tock_na_obmocju_{a}_{b}.tsv', sep='\t') 
+
+#BOLJŠI ALGORITEM ZA KROG
+
+def krog_boljsi_algoritem(a,b,st_vseh, k):
+    mnozica = nakljucna_mnozica(st_vseh,a,b)
+    podmnozica = podmnozica_nakljucne_mnozice_krog(mnozica,k )
+    kon_lup_eksaktna = konveksna_lupina(mnozica, len(mnozica))
+    ploscina_eksaktna = ploscina(kon_lup_eksaktna)
+    obseg_eksakten = obseg(kon_lup_eksaktna)
+
+    t = tezisce_vzorca(podmnozica)
+    r = polmer(podmnozica, t)
+    ploscina_simulirana_krog = ploscina_kroga(r)
+    
+    relativna_napaka_ploscine_krog = (abs(ploscina_simulirana_krog-ploscina_eksaktna)/ ploscina_eksaktna)*100
+
+    
+    obseg_simuliran_krog = obseg_kroga(r)
+    relativna_napaka_obseg_krog = (abs(obseg_simuliran_krog - obseg_eksakten)/obseg_eksakten)*100
+
+    
+    rezultati = {'st_vseh': [],'relativna_napaka_ploscine_krog': [], 'relativna_napaka_obseg_krog' : [], 'k': [] }
+    rezultati['st_vseh'] += [st_vseh]
+    rezultati['k'] += [k]
+    rezultati['relativna_napaka_ploscine_krog'] += [relativna_napaka_ploscine_krog]
+    rezultati['relativna_napaka_obseg_krog'] += [relativna_napaka_obseg_krog]
+
+    data = pd.DataFrame(rezultati)
+    
+
+    return(data)  
+
+def generiraj_primere_bolsi_krog(a,b,st_vseh, k):
+    # a in b sta največji vrednosti na x in y osi
+    # najvecje st_vseh elementov v množici S
+    
+    koncni_rezultati_za_krog = [] 
+    for r in tqdm(range(k+1, st_vseh, 5)):
+        for j in range(0,2):
+            koncni_rezultati_za_krog += [krog_boljsi_algoritem(a,b,r, k)]
+    zadnji_rezultati = pd.concat(koncni_rezultati_za_krog, axis=0, ignore_index= True)
+    zadnji_rezultati.index.name = 'ID'
+    zadnji_rezultati.to_csv(f'Analiza_modelov/files/rezultati_za_boljsi_krog_{st_vseh}_tock_na_obmocju_{a}_{b}.tsv', sep='\t') 
 
 #PRIMERJAVA 1. IN 2. METODE
 
@@ -359,13 +413,14 @@ def primerjava_prve_in_druge_metode(a,b,m,st_vseh):
     relativna_napaka_obseg_krog = (abs(obseg_simuliran_krog - obseg_eksakten)/obseg_eksakten)*100
 
 
-    rezultati = {'st_vseh': [], 'delez_izbranih_tock': [], 'relativna_napaka_ploscine_1': [], 'relativna_napaka_obseg_1' : [], 'relativna_napaka_ploscine_krog': [], 'relativna_napaka_obseg_krog' : [] }
+    rezultati = {'st_vseh': [], 'delez_izbranih_tock': [], 'relativna_napaka_ploscine_1': [], 'relativna_napaka_obseg_1' : [], 'relativna_napaka_ploscine_krog': [], 'relativna_napaka_obseg_krog' : [], 'm':[] }
     rezultati['st_vseh'] += [st_vseh]
     rezultati['delez_izbranih_tock'] += [delez_izbranih_tock]
     rezultati['relativna_napaka_ploscine_1'] += [relativna_napaka_ploscine_1]
     rezultati['relativna_napaka_obseg_1'] += [relativna_napaka_obseg_1]
     rezultati['relativna_napaka_ploscine_krog'] += [relativna_napaka_ploscine_krog]
     rezultati['relativna_napaka_obseg_krog'] += [relativna_napaka_obseg_krog]
+    rezultati['m'] += [m]
 
     data = pd.DataFrame(rezultati)
     return(data)
@@ -378,10 +433,76 @@ def generiraj_primere_za_primerjavo(a,b,m,st_vseh):
                 koncni_rezultati_za_primerjavo += [primerjava_prve_in_druge_metode(a,b,n,r)]
     zadnji_rezultati = pd.concat(koncni_rezultati_za_primerjavo, axis=0, ignore_index= True)
     zadnji_rezultati.index.name = 'ID'
-    zadnji_rezultati.to_csv(f'Analiza_modelov/files/rezultati_primerjave{st_vseh}_tock_na_obmocju_{a}_{b}_pri{j}_iteracijah.tsv', sep='\t')
+    zadnji_rezultati.to_csv(f'Analiza_modelov/files/rezultati_primerjave{st_vseh}_tock_na_obmocju_{a}_{b}_pri{j}_iteracijah_in_{m}_delitvah_obmocja.tsv', sep='\t')
+
+def primerjava_prve_in_krog_boljs_metode(a,b,m,st_vseh,k):
+
+    mnozica = nakljucna_mnozica(st_vseh,a,b)
+    podmnozica = podmnozica_nakljucne_mnozice_krog(mnozica, k)
+
+    kon_lup_eksaktna = konveksna_lupina(mnozica, len(mnozica))
+    ploscina_eksaktna = ploscina(kon_lup_eksaktna)
+    obseg_eksakten = obseg(kon_lup_eksaktna)
+
+    # rezultati metode 1
+
+    izbrane = izberi_tocke(a,b,m,mnozica)
+    kon_lup_simulirana = konveksna_lupina(izbrane, len(izbrane))
+    ploscina_simulirana_1 = ploscina(kon_lup_simulirana)
+    obseg_simuliran_1 = obseg(kon_lup_simulirana)
+
+    # napake 1. metode
+
+    napaka_ploscina_1 = abs(ploscina_eksaktna-ploscina_simulirana_1)
+    relativna_napaka_ploscine_1 = 100 - (abs(ploscina_simulirana_1 -ploscina_eksaktna)/ ploscina_eksaktna)*100
+
+    napaka_obseg_1 = abs(obseg_eksakten-obseg_simuliran_1)
+    relativna_napaka_obseg_1 = 100 - (abs(obseg_simuliran_1 - obseg_eksakten)/obseg_eksakten)*100
+
+    delez_izbranih_tock = (len(izbrane)/len(mnozica))*100
+
+    # podatki za metodo 2
+
+    t = tezisce_vzorca(podmnozica)
+    r = polmer(podmnozica, t)
+
+    ploscina_simulirana_krog = ploscina_kroga(r)
+    relativna_napaka_ploscine_krog = (abs(ploscina_simulirana_krog-ploscina_eksaktna)/ ploscina_eksaktna)*100
+     
+    obseg_simuliran_krog = obseg_kroga(r)
+    relativna_napaka_obseg_krog = (abs(obseg_simuliran_krog - obseg_eksakten)/obseg_eksakten)*100
+
+
+    rezultati = {'st_vseh': [], 'delez_izbranih_tock': [], 'relativna_napaka_ploscine_1': [], 'relativna_napaka_obseg_1' : [], 'relativna_napaka_ploscine_krog': [], 'relativna_napaka_obseg_krog' : [], 'm':[], 'k':[]}
+    rezultati['st_vseh'] += [st_vseh]
+    rezultati['delez_izbranih_tock'] += [delez_izbranih_tock]
+    rezultati['relativna_napaka_ploscine_1'] += [relativna_napaka_ploscine_1]
+    rezultati['relativna_napaka_obseg_1'] += [relativna_napaka_obseg_1]
+    rezultati['relativna_napaka_ploscine_krog'] += [relativna_napaka_ploscine_krog]
+    rezultati['relativna_napaka_obseg_krog'] += [relativna_napaka_obseg_krog]
+    rezultati['m'] += [m]
+    rezultati['k'] += [k]
+
+    data = pd.DataFrame(rezultati)
+    return(data)
+
+def generiraj_primere_za_primerjavo_z_boljso_2_metodo(a,b,m,st_vseh, k):
+    koncni_rezultati_za_primerjavo = [] 
+    for r in tqdm(range(k+100, st_vseh, 50)):
+        for n in range(10, m, 10):
+            for f in range(50, k, 50):
+                for j in range(0,1000):
+                    koncni_rezultati_za_primerjavo += [primerjava_prve_in_krog_boljs_metode(a,b,n,r, k)]
+    zadnji_rezultati = pd.concat(koncni_rezultati_za_primerjavo, axis=0, ignore_index= True)
+    zadnji_rezultati.index.name = 'ID'
+    zadnji_rezultati.to_csv(f'Analiza_modelov/files/rezultati_primerjave_krog_boljse{st_vseh}_tock_na_obmocju_{a}_{b}_pri{j}_iteracijah_in_{m}_delitvah_obmocja.tsv', sep='\t')
      
 if __name__ == '__main__':
     print('Generiram podatke')
 
-    #c = generiraj_primere_za_primerjavo(10,10,100,1000)
-    a = generiraj_primere_za_primerjavo(10,10,101,1001)     
+    #b = generiraj_primere_za_krog(10,10,20, 3)
+    #c = generiraj_primere_za_primerjavo(10,10,101,1001)
+    #a = generiraj_primere_za_primerjavo(100,100,101,1001) 
+    d = generiraj_primere_za_primerjavo_z_boljso_2_metodo(10,10,51,1001, 501)
+
+       

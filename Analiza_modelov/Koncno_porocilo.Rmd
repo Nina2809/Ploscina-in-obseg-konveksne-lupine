@@ -1,16 +1,17 @@
+
 ---
 title: "Poročilo projekta - Aproksimacija ploščine in obsega konveksne lupine"
 author: "Nina Velkavrh in Ajda Majhenič"
+date: "26.11.2021"
 output:
   html_document: default
-  pdf_document:
-    includes:
-      in_header: lib/styles.sty
-    latex_engine: xelatex
-runtime: shiny
+  pdf_document: default
 ---
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+```{r setup, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
+
+
 ```
 
 ```{r Analiza_modelov, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
@@ -18,7 +19,6 @@ source("Analiza_generiranih_podatkov.r", encoding="UTF-8")
 ```
 
 ### Uvod - Definicija konveksne lupine
-
 
 
 Podmnožica $T$ v $\mathbb{R}^2$ je konveksna, če lahko poljubni točki $A$ in $B$ v $T$  povežemo z daljico, ki je v celoti vsebovana v množici $T$.
@@ -35,9 +35,49 @@ Sprva sva implementirali znan Jarvisovega algoritem za določitev konveksne lupi
 
 ### Opis algoritma za določitev konveksne lupine množice S z n točkami
 
+Ob začetku najnega projekta sva v najin program implementirali zelo znan in intuitive algoritem za določanje konveksne lupine imenovan Jarvisov algoritem. Ta algoritem je poznan tudi po imenu algoritem zavijanja daril, saj se premika od enega oglišča konveksne lupine do drugega kot, da ovijamo kos papirja okoli množice točk.
+
+\newline Uporabljen algoritem deluje po naslednjem postopku:
+
+- Začnemo s tem, da najdemo točko $p_1$ iz množice $S$, ki je oglišče konveksne lupine. Za $p_1$ vzamemo najnižjo točko množice $S$.
+V kolikor množica $S$ vsebuje več točk z minimalno $y$ koordinato, vzamemo najbolj levo točko med njimi (točko z najmanjšo $x$ koordinato). 
+
+- Predpostavili smo, da je  $p_1$ oglišče konveksne lupine,  posledično mora obstajati tudi taka točka $p_2$ iz množice $S$, da je tudi $p_2$ oglišče konveksne lupine in da je $p_1p_2$ rob konveksne lupine. Točki, ki bi ustrezali omenjenemu pogoju sta dve. Za $p_2$ izberemo tisto točko, ki naredi $p_1p_2$ za rob, ki se bo gibal v smer urinega kazalca.
+
+- Kako najdemo $p_2$?
+
+\newline Naj bo $l_1$ vodoravna premica skozi $p_1$. Potem je $p_2$ prva točka, ki jo "zadanemo", če vrtimo $l_1$ okrog $p_1$ v smer urinega kazalca. 
+Naj bo $\alpha _q$ kot med $l_1$ in premico $p_1q$ za vsak $q \in S \setminus \lbrace p_1 \rbrace$. Potem je $\alpha _q$ kot po katerem moramo vrteti $l_1$ okrog 
+$p_1$ v smeri urinega kazalca, dokler ne "zadanemo" $p_1q$. Upoštevamo, da je $0 \leq \alpha _q \leq 2\pi$. Torej je $p_2$ tista točka množice 
+$S \setminus \lbrace p_1 \rbrace$, za katero je ta kot minimalen. Če obstaja več točk, za katere je kot $\alpha$ minimalen, potem je $p_2$ tista izmed teh točk, 
+ki ima maksimalno razdaljo od $p_1$.
+
+\newline Torej lahko za dano točko $p_1$ najdemo naslednje oglišče konveksne lupine $p_2$ tako, da preverimo vse točke $q \in S \setminus \lbrace p_1 \rbrace$ in izberemo tisto,
+za katero je kot $\alpha _q$ minimalen. 
+
+- Nadaljujemo seveda po enakem postopku: Naj bo $l_2$ premica skozi točki $p_1$ in $p_2$. Za vsako točko $q \in S \setminus \lbrace p_2 \rbrace$ naj bo $\alpha _q$
+kot med $l_2$ in premico $p_2q$. (Sedaj je $\alpha _q$ kot po katerem moramo vrteti $l_2$ okrog $p_2$ proti smeri urnega kazalca, dokler ne "zadanemo" $p_2q$.) 
+Potem je $p_3$ - naslednje oglišče konveksne lupine - tista točka, katere kot $\alpha$ je minimalen.
+
+Nadaljujemo z izračunavanjem oglišč $p_4$, $p_5$, ..., dokler se ne vrnemo v $p_1$. Bolj natančno: Če $p_{h+1} = p_1$, smo končali in imamo seznam oglišč kompleksne 
+lupine $(p_1, p_2, ... , p_h)$.
+
+
+\newline Po imlplementaciji zgoraj opisanega algoritma sva definirali obseg in ploščino. Obseg sva izračunali tako, da sva računali razdalje med točkami konveksne lupine in vrednosti med seboj seštevali. Ploščino pa sva izračunali tako, da sva implementirali znano formulo za določitev ploščino poljubnega lika imenovano Shoelace formula. 
+
+Seveda sva za določitev konveksne lupine, izračun ploščine in obsega potrebovali množico S z n točkami. Zato sva definirali naključno množico, ki sva ji določili parametre a, b in qty. V implementaciji Jarvisovega algoritma sva že definirali točko, zato sva tu potrebovali le še naključno izbiro za koordinato x in y. Parameter a določi, da koordinate x izbiramo iz intervala [o,a], parameter b pa, da koordinato y izbiramo iz območja [0,b]. Parameter qty določi koliko naključnih točk iz območja [0,a]x[0,b] želimo. Sicer sva tu definirali 2 parametra za določitev območja, a sva kasneje v algoritmu za aproksimacijo ploščine in obsega uporabljali le še kvadrate, torej bi lahko definirali tudi samo parameter a. 
+
+Kasneje sva se lotili še glavnega dela projektne naloge. Za algoritem, ki bi lahko aproksimiral ploščino in obseg območja konveksne lupine sva imeli 2 ideji. Oba algoritma sta spodaj podrobneje opisana.
+
 ### Opis 1. metode
 
+Pri prvi metodi začnemo s praznim seznamom pravokotnikov. Privzamemo, da je vrednost a/m dolžina, vrednost b/m pa višina celice mreže na katero razdelimo začetno območje. Slednje nam torej območje [0, a]x[0, b] razdeli na pravokotnike (kvadrate) velikosti m x m. Iz vsakega dobljenega pravokotnika (celice) izberemo kvečjemu eno točko (če je v pravokotniku več točk množice S, naključno izberemo eno izmed njih, če pa v njem ni nobene točke iz množice S, potem ta pravokotnik »preskočimo«). Izbrane točke zbiremo v seznam, ki sedaj predstavlja podmnožico osnovne množice S in v najnem alogritmu en vzorec. Dobljenemu vzorcu (podmnožici) določimo konveksno lupino, njeno ploščino in obseg.
+
 ### Opis 2. metode
+
+Najina druga ideja za algoritem, ki bi aproksimiral območje konveksne lupine je bila, da bi konveksno lupino aproksimirali z najmanjšim krogom, ki bi vseboval vse točke množice S. Torej pri temu algoritmu, bi en vzorec predstavljal celotno množico S. Omenjena ideja se je skozi analizo podatkov izkazala za precej slabo. V algoritmu najprej določimo težišče (povprečje x in y koordinat) vzorca množice S. (Vzamemo vse x koordinate točk iz množice S in izračunamo njihovo povprečje. Enako ponovimo za y koordinate. Dobimo torej povprečje x in y koordinat.) Nato določimo še polmer kot dolžino od težišča do najbolj oddaljene točke množice S. Definiramo ploščino in obseg kroga po znanih formulah.
+
+Skozi celotno analizo podatkov sva kot omenjeno ugotovili, da je izbira vzorca celotna množica S precej slaba, zato sva poskusili tudi ta algoritem izboljšati in ga pribljižati točnosti prvega algoritma. Zato sva definirali podmnožico naključne množice, ki iz osnovne množice S vzame k tock.Po izbiri podmnožice algoritem deluje kot zgoraj opisano, le da izbere težišče podmnožice in polmer kot razdaljo najbolj oddaljene točke od težišča iz podmnožice.  
 
 ### Statistično modeliranje v programu r
 
@@ -47,8 +87,9 @@ Podakte sva uvozili v program r in jih statistično obdelali. Med analiziranjem 
 
 - Koliko je povprečni delež točk v vzorcu 1. modela, ki ga potrebujeva za 90\% , 99\% in 99,9\% natančnost pri različnih velikostih osnovne množice S,
 - kako na rezultate modela 1.vpliva različna razdelitev območja pri fiksnem številu točk,
-- ali in kdaj je mogoče tudi z 2. metodo dobiti 90\% , 99\% in 99,9\% natančnost,
 - kako se razlikujejo rezultati posamezne metode glede na različno število točk v množici S,
+- ali in kdaj je mogoče tudi z 2. metodo dobiti 90\% , 99\% in 99,9\% natančnost,
+
 
 
 ### Rezultati:
@@ -57,7 +98,7 @@ Podakte sva uvozili v program r in jih statistično obdelali. Med analiziranjem 
 
 Ob začetku analize podatkov sva si odgovorili na vprašanje kakšen delež točk je potreben za 90\% , 99\% in 99,9\% natančnost 1. modela. Program je zgeneriral točke na območju [0,10] x [0,10], pri 100 delitvah enega intervala - torej mreža 10000 kvadratov, pri različnih močeh množice S. Sprva sva podatke generirali tako, da se je za vsako moč množice S algoritem ponovil stokrat, ker sva pri takem številu ponovitev ugotovili, da obstajajo odstopanja pri deležih, sva se odločili, da algoritem poženeva raje tisočkrat za vsako moč množice S. Generiranje podatkov je sicer trajalo kar nekaj časa, a sva kasneje z analizo ugotovili, da je tovrstn način bolj reprezentativen. Rezultate zadnjega poskusa prikazujeta spodja grafa. Opazi se, da funkciji nimata nenavadnih odstopanj. To, da ne opazimo odstopanj se zdi logično, saj se pri večjem številu iteracij izračunana povprečna vrednost deležev točk, ki je potrebna za željeno natančnost bolj približuje pravi povprečni vrednosti. Iz spodnjih grafov je moč opaziti, da se povprečni delež točk potrebnih za željeno natančnost, zmanjšuje z večanjem moči množice S. Videno je verjetno posledica tega, da je območje glede na količino točk v večjih množicah precej majhno in so posledično točke zelo gosto razporejene po območju. Kot omenjeno model 1 iz vsakega dela mreže na katero je razdeljen kvadrat [0,10] x [0,10], vzame le 1 točko oziroma nobene, če celica nima točke množice S. Posledica tega je, da so neizbrane točke verjetno zelo blizu izbranim in se rezultati aproksimacije ne razlikujejo bistveno od eksaktnih vrednosti ploščin in obsega. 
 
-\newline Grafa prikazujeta potrebne deleže točk za željene natančnosti aproksimacije obsega in ploščine vidimo lahko, da so potrebni deleži za obseg le nekaj odstotnih točk manj kot potrebni deleži za ploščino. 
+\newline Grafa prikazujeta potrebne deleže točk za željene natančnosti aproksimacije obsega in ploščine. Vidimo lahko, da so potrebni deleži za obseg le nekaj odstotnih točk manj kot potrebni deleži za ploščino. 
 
 ```{r graf_razlicnih_delezev, echo=FALSE, message=FALSE,  fig.show="hold", out.width="50%"}
 print(graf_razlicnih_delezev)
@@ -67,17 +108,16 @@ print(graf_razlicnih_delezev_obseg)
 
 #### Vpliv razdelitve območja na rezultate 1. metode
 
-dodati morva graf
+Zelo pomemben del 1. metode je to, da razdelimo območje na več delov. Posledično naju je zanimalo, kako delitev območja dejansko vpliva na rezultate metode pri različnih močeh množice S. Ponovno sva vzeli območje [0,10] x [0,10] in ponovili algoritem tisočkrat za vsako moč množice S.  Ugotovitve sva prikazali na spodnjem grafu. Vidimo lahko, da pri delitvi na 10 delov območja [0,10] x [0,10], povprečna natančnost aproksmacije ploščine pri večanju moči množice S pada, podobno na rezultate vpliva delitev na 20 in 30. Kasneje, ko delimo območje še na več delov pa opazimo, da se rezultati pri različnih delitvah ne razlikujejo več toliko. Torej bi lahko rekli, da od delitve 40 naprej pri takem obmučju, z povečanjem delitev ne izboljšujemo natančnosti algoritma. V programu r sva si narisali tudi graf, ki predstavlja povprečne napake aproksimacije obsega pri različnih delitvah, a sta si grafa med seboj zelo podobna, zato v poročilo nisva vključili obeh.
 
-#### 2. metoda in njena uspešnost
-
-```{r graf_napak_za_krog, echo=FALSE, message=FALSE,  fig.align='center'}
-print(graf_napak_za_krog)
+```{r graf_m, echo=FALSE, message=FALSE,  fig.align='center'}
+print(graf_m)
 ```
 
-#### Primerjava rezultatov 1. in 2. metode pri različnih močeh množice S
 
-Spodnja grafa prikazujeta povprečne rezultate obeh metod pri tisočih ponovitvah metod za vako moč množice S. Tudi pri spodnjih grafih sva sprva poskusili algoritem ponoviti le stokrat za vsako moč množice, a je prišlo tudi tu do precejšnih odstopanj. Razlog odstopanj je podoben kot pri izračunu potrebnih deležev. Torej, da se pri večjem številu ponovitev modela izračunana povprečna vrednost napake za vsako moč množice bolj približuje pravi napaki. Opazimo lahko, da so napake 2. metode bistveno večje, kot napake 1. metode. Razlog za to je, da 2. metoda vzame za polmer kroga točko, ki je najbolj oddaljena od težišča (povprečja koordinat točk), ta razdalja je lahko v primeru, da je večina točk zgoščena okoli neke vrednosti in le majhen delež točk popolnoma drugje, precej velika. Ta majhen delež točk, ki se nahaja stran od večine ne prispeva veliko pri izračunu povprečja koordinat, zato se težišče nahaja bližje območju kjer je večji delež točk množice S. Posledično bo krog vzel precej večje območje, kot je konveksna lupina te množice in bojo napake aproksimacije zelo velike. Podoben razmislek, kot smo ga uporabili pri razlagi, zakaj je za večje množice potreben manjši delež točk za željeno točnosti, lahko uporabimo tudi tu, ko opazimo, da se napake 2. metode manjšajo z večjim številom točk množice S. Na območju [0,10] x [0,10] je namreč zelo verjetno, da bojo točke večjih množic bolj enakomerno porazdeljene po območju in bo krog posledično manj odstopal od dejanske konveksne lupine. Zanimiv podatek, ki sva ga opazili je, da na neki toči napaka ne pade pod 55\% za ploščino in 10\% za obseg. Razlog tega je verjetno ta, da se z večanjem vzorca povečuje verjetnost, da bo najbolj oddaljena točka od težišča blizu roba, težišče pa blizu sredini kvadrata in bo s tem krog očrtan krog kvadrata. 
+#### Primerjava rezultatov prve različice 1. metode in 2. metode pri različnih močeh množice S
+
+Spodnja grafa prikazujeta povprečne rezultate obeh metod pri tisočih ponovitvah metod za vsako moč množice S. Tudi pri spodnjih grafih sva sprva poskusili algoritem ponoviti le stokrat za vsako moč množice, a je prišlo tudi tu do precejšnih odstopanj. Razlog odstopanj je podoben kot pri izračunu potrebnih deležev. Torej, da se pri večjem številu ponovitev modela izračunana povprečna vrednost napake za vsako moč množice bolj približuje pravi napaki. Opazimo lahko, da so napake prve različice 2. metode bistveno večje, kot napake 1. metode. Razlog za to je, da prva različica 2. metode vzame za polmer kroga točko, ki je najbolj oddaljena od težišča (povprečja koordinat točk), ta razdalja je lahko v primeru, da je večina točk zgoščena okoli neke vrednosti in le majhen delež točk popolnoma drugje, precej velika. Ta majhen delež točk, ki se nahaja stran od večine ne prispeva veliko pri izračunu povprečja koordinat, zato se težišče nahaja bližje območju kjer je večji delež točk množice S. Posledično bo krog vzel precej večje območje, kot je konveksna lupina te množice in bojo napake aproksimacije zelo velike. Podoben razmislek, kot smo ga uporabili pri razlagi, zakaj je za večje množice potreben manjši delež točk za željeno točnosti, lahko uporabimo tudi tu, ko opazimo, da se napake prve različice 2. metode manjšajo z večjim številom točk množice S. Na območju [0,10] x [0,10] je namreč zelo verjetno, da bojo točke večjih množic bolj enakomerno porazdeljene po območju in bo krog posledično manj odstopal od dejanske konveksne lupine. Zanimiv podatek, ki sva ga opazili je, da na neki točki napaka ne pade pod 55\% za ploščino in 10\% za obseg. Razlog tega je verjetno ta, da se z večanjem vzorca povečuje verjetnost, da bo najbolj oddaljena točka od težišča blizu roba, težišče pa blizu sredini kvadrata in bo s tem krog očrtan krog kvadrata. 
 
 \newline Pri grafu, ki prikazuje povprečne napake 1. metode lahko opazimo, da so napake med 0 in 0.15, a se z večanjem vzorca povečujejo. Slednje se dogaja zato, ker je pri izbiri točk pri manjših močeh množice bolj verjetno, da so izbrane točke ravno točke, ki sestavljajo konveksno lupino. Medtem, ko gostota razporeditve točk večjih množic S vpliva na to, da je verjetnost, da izberemo ravno točke ovojnice manjša. 
 
@@ -86,13 +126,21 @@ print(graf_napak_1.metode)
 print(graf_napak_2.metode)
 ```
 
-ni uredu --- raje glede na delitev območja (popravi)
-```{r shiny}
-shinyAppDir("Shiny", options=list(width="100%", height=600, echo=FALSE, message=FALSE))
+Seveda z rezultati, ki jih predstavljata zgornja grafa nisva bili zadovoljni in sva tudi hitro ugotovili, da ideja, da za vzorec vzamemo celotno množico S ni najboljša. Algoritem sva izboljšali, tako da sva 2. metodo implementirali na podmnožici množice S. Spodaj so prikazani rezultati te različice 2. metode v primerjavi s 1. metodo.
+
+#### Primerjava rezultatov druge različice 1. metode in 2. metode pri različnih močeh množice S
+
+
+#### Uspešnost druge različice 2. metode
+
+```{r graf_napak_za_krog, echo=FALSE, message=FALSE,  fig.align='center'}
+print(graf_napak_za_krog)
 ```
 
 
 ## Zaključek in možne izboljšave
+
+
 
 
 

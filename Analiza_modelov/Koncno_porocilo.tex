@@ -36,52 +36,12 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={Koncno\_porocilo},
+  pdftitle={Poročilo projekta - Aproksimacija ploščine in obsega konveksne lupine},
   pdfauthor={Nina Velkavrh in Ajda Majhenič},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=1in]{geometry}
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -103,48 +63,274 @@
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
 
-\title{Koncno\_porocilo}
+\title{Poročilo projekta - Aproksimacija ploščine in obsega konveksne
+lupine}
 \author{Nina Velkavrh in Ajda Majhenič}
-\date{25 11 2021}
+\date{26.11.2021}
 
 \begin{document}
 \maketitle
 
-\hypertarget{r-markdown}{%
-\subsection{R Markdown}\label{r-markdown}}
+\hypertarget{uvod---definicija-konveksne-lupine}{%
+\subsubsection{Uvod - Definicija konveksne
+lupine}\label{uvod---definicija-konveksne-lupine}}
 
-This is an R Markdown document. Markdown is a simple formatting syntax
-for authoring HTML, PDF, and MS Word documents. For more details on
-using R Markdown see \url{http://rmarkdown.rstudio.com}.
+Podmnožica \(T\) v \(\mathbb{R}^2\) je konveksna, če lahko poljubni
+točki \(A\) in \(B\) v \(T\) povežemo z daljico, ki je v celoti
+vsebovana v množici \(T\).
 
-When you click the \textbf{Knit} button a document will be generated
-that includes both content as well as the output of any embedded R code
-chunks within the document. You can embed an R code chunk like this:
+Naj bo \(S\) končna množica točk v ravnini. Konveksna lupina je
+najmanjša konveksna množica, ki vsebuje \(S\).
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{summary}\NormalTok{(cars)}
-\end{Highlighting}
-\end{Shaded}
+Z drugimi besedami mejo konveksne lupine tvori konveksni poligon,
+katerega ogljišča so točke množice \(S\), robovi pa so odseki, ki
+povezujejo pare točk množice \(S\). Označimo konveksni mnogokotnih s
+\(CH(S)\).
 
-\begin{verbatim}
-##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00
-\end{verbatim}
+\hypertarget{opis-problema}{%
+\subsubsection{Opis problema}\label{opis-problema}}
 
-\hypertarget{including-plots}{%
-\subsection{Including Plots}\label{including-plots}}
+V projektni nalogi sva se ukvarjali z zelo pogostim problemom geometrije
+in sicer konstruiranje konveksne lupine s končno množico točk v ravnini.
+Osredotočili sva se predvsem na izračun njene ploščine in obsega.
+Predpostavljali sva, da imamo konveksno lupino množice \(P\), znotraj
+katere je \(n\) točk. Sprva sva implementirali znan Jarvisovega
+algoritem za določitev konveksne lupine množice S z n točkami, nato sva
+izračunali eksakten obseg in ploščino. V glavnem delu projekta sva
+modelirali 2 metodi za njuno aproksimacijo. Dobljene ploščine in obsege,
+sva med sabo primerjali in zelo hitro ugotovili, da je 2. metoda precej
+slabša kot 1., saj je le ta vračala precej večje napake kot 1..
+Doblejene rezultate sva primerjali tudi z dejanskimi vrednostmi obsega
+in ploščine. Zanimalo naju je koliko elementov v vzorcu (podmnožici
+množice S) potrebujeva, da dobiva približek z natančnostjo 90\% , 99\%
+in 99,9\% ter ali ima pri tem število točk kakšno vlogo.
 
-You can also embed plots, for example:
+\hypertarget{opis-algoritma-za-doloux10ditev-konveksne-lupine-mnoux17eice-s-z-n-toux10dkami}{%
+\subsubsection{Opis algoritma za določitev konveksne lupine množice S z
+n
+točkami}\label{opis-algoritma-za-doloux10ditev-konveksne-lupine-mnoux17eice-s-z-n-toux10dkami}}
 
-\includegraphics{Koncno_porocilo_files/figure-latex/pressure-1.pdf}
+Ob začetku najnega projekta sva v najin program implementirali zelo znan
+in intuitive algoritem za določanje konveksne lupine imenovan Jarvisov
+algoritem. Ta algoritem je poznan tudi po imenu algoritem zavijanja
+daril, saj se premika od enega oglišča konveksne lupine do drugega kot,
+da ovijamo kos papirja okoli množice točk.
 
-Note that the \texttt{echo\ =\ FALSE} parameter was added to the code
-chunk to prevent printing of the R code that generated the plot.
+\newline Uporabljen algoritem deluje po naslednjem postopku:
+
+\begin{itemize}
+\item
+  Začnemo s tem, da najdemo točko \(p_1\) iz množice \(S\), ki je
+  oglišče konveksne lupine. Za \(p_1\) vzamemo najnižjo točko množice
+  \(S\). V kolikor množica \(S\) vsebuje več točk z minimalno \(y\)
+  koordinato, vzamemo najbolj levo točko med njimi (točko z najmanjšo
+  \(x\) koordinato).
+\item
+  Predpostavili smo, da je \(p_1\) oglišče konveksne lupine, posledično
+  mora obstajati tudi taka točka \(p_2\) iz množice \(S\), da je tudi
+  \(p_2\) oglišče konveksne lupine in da je \(p_1p_2\) rob konveksne
+  lupine. Točki, ki bi ustrezali omenjenemu pogoju sta dve. Za \(p_2\)
+  izberemo tisto točko, ki naredi \(p_1p_2\) za rob, ki se bo gibal v
+  smer urinega kazalca.
+\item
+  Kako najdemo \(p_2\)?
+\end{itemize}
+
+\newline Naj bo \(l_1\) vodoravna premica skozi \(p_1\). Potem je
+\(p_2\) prva točka, ki jo ``zadanemo'', če vrtimo \(l_1\) okrog \(p_1\)
+v smer urinega kazalca. Naj bo \(\alpha _q\) kot med \(l_1\) in premico
+\(p_1q\) za vsak \(q \in S \setminus \lbrace p_1 \rbrace\). Potem je
+\(\alpha _q\) kot po katerem moramo vrteti \(l_1\) okrog \(p_1\) v smeri
+urinega kazalca, dokler ne ``zadanemo'' \(p_1q\). Upoštevamo, da je
+\(0 \leq \alpha _q \leq 2\pi\). Torej je \(p_2\) tista točka množice
+\(S \setminus \lbrace p_1 \rbrace\), za katero je ta kot minimalen. Če
+obstaja več točk, za katere je kot \(\alpha\) minimalen, potem je
+\(p_2\) tista izmed teh točk, ki ima maksimalno razdaljo od \(p_1\).
+
+\newline Torej lahko za dano točko \(p_1\) najdemo naslednje oglišče
+konveksne lupine \(p_2\) tako, da preverimo vse točke
+\(q \in S \setminus \lbrace p_1 \rbrace\) in izberemo tisto, za katero
+je kot \(\alpha _q\) minimalen.
+
+\begin{itemize}
+\tightlist
+\item
+  Nadaljujemo seveda po enakem postopku: Naj bo \(l_2\) premica skozi
+  točki \(p_1\) in \(p_2\). Za vsako točko
+  \(q \in S \setminus \lbrace p_2 \rbrace\) naj bo \(\alpha _q\) kot med
+  \(l_2\) in premico \(p_2q\). (Sedaj je \(\alpha _q\) kot po katerem
+  moramo vrteti \(l_2\) okrog \(p_2\) proti smeri urnega kazalca, dokler
+  ne ``zadanemo'' \(p_2q\).) Potem je \(p_3\) - naslednje oglišče
+  konveksne lupine - tista točka, katere kot \(\alpha\) je minimalen.
+\end{itemize}
+
+Nadaljujemo z izračunavanjem oglišč \(p_4\), \(p_5\), \ldots, dokler se
+ne vrnemo v \(p_1\). Bolj natančno: Če \(p_{h+1} = p_1\), smo končali in
+imamo seznam oglišč kompleksne lupine \((p_1, p_2, ... , p_h)\).
+
+\newline Po imlplementaciji zgoraj opisanega algoritma sva definirali
+obseg in ploščino. Obseg sva izračunali tako, da sva računali razdalje
+med točkami konveksne lupine in vrednosti med seboj seštevali. Ploščino
+pa sva izračunali tako, da sva implementirali znano formulo za določitev
+ploščino poljubnega lika imenovano Shoelace formula.
+
+Seveda sva za določitev konveksne lupine, izračun ploščine in obsega
+potrebovali množico S z n točkami. Zato sva definirali naključno
+množico, ki sva ji določili parametre a, b in qty. V implementaciji
+Jarvisovega algoritma sva že definirali točko, zato sva tu potrebovali
+le še naključno izbiro za koordinato x in y. Parameter a določi, da
+koordinate x izbiramo iz intervala {[}o,a{]}, parameter b pa, da
+koordinato y izbiramo iz območja {[}0,b{]}. Parameter qty določi koliko
+naključnih točk iz območja {[}0,a{]}x{[}0,b{]} želimo. Sicer sva tu
+definirali 2 parametra za določitev območja, a sva kasneje v algoritmu
+za aproksimacijo ploščine in obsega uporabljali le še kvadrate, torej bi
+lahko definirali tudi samo parameter a.
+
+Kasneje sva se lotili še glavnega dela projektne naloge. Za algoritem,
+ki bi lahko aproksimiral ploščino in obseg območja konveksne lupine sva
+imeli 2 ideji. Oba algoritma sta spodaj podrobneje opisana.
+
+\hypertarget{opis-1.-metode}{%
+\subsubsection{Opis 1. metode}\label{opis-1.-metode}}
+
+Pri prvi metodi začnemo s praznim seznamom pravokotnikov. Privzamemo, da
+je vrednost a/m dolžina, vrednost b/m pa višina. To nam območje {[}0,
+a{]}x{[}0, b{]} razdeli na pravokotnike (kvadrate) velikosti m x m. Iz
+vsakega dobljenega pravokotnika izberemo kvečjemu eno točko (če je v
+pravokotniku več točk množice S, naključno izberemo eno izmed njih, če
+pa v njem ni nobene točke iz množice S, potem ta pravokotnik
+»preskočimo«). Izbrane točke zberemo v seznam, ki sedaj predstavlja
+podmnožico osnovne množice S in v najnem alogritmu en vzorec. Dobljenemu
+vzorcu (podmnožici) določimo konveksno lupino, njeno ploščino in obseg.
+
+\hypertarget{opis-2.-metode}{%
+\subsubsection{Opis 2. metode}\label{opis-2.-metode}}
+
+\hypertarget{statistiux10dno-modeliranje-v-programu-r}{%
+\subsubsection{Statistično modeliranje v programu
+r}\label{statistiux10dno-modeliranje-v-programu-r}}
+
+\hypertarget{obdelava-podatkov-v-programu-r}{%
+\paragraph{Obdelava podatkov v programu
+r}\label{obdelava-podatkov-v-programu-r}}
+
+Podakte sva uvozili v program r in jih statistično obdelali. Med
+analiziranjem rezultatov naju je zanimalo:
+
+\begin{itemize}
+\tightlist
+\item
+  Koliko je povprečni delež točk v vzorcu 1. modela, ki ga potrebujeva
+  za 90\% , 99\% in 99,9\% natančnost pri različnih velikostih osnovne
+  množice S,
+\item
+  kako na rezultate modela 1.vpliva različna razdelitev območja pri
+  fiksnem številu točk,
+\item
+  kako se razlikujejo rezultati posamezne metode glede na različno
+  število točk v množici S,
+\item
+  ali in kdaj je mogoče tudi z 2. metodo dobiti 90\% , 99\% in 99,9\%
+  natančnost,
+\end{itemize}
+
+\hypertarget{rezultati}{%
+\subsubsection{Rezultati:}\label{rezultati}}
+
+\hypertarget{povpreux10dni-deleux17e-toux10dk-za-90-99-in-999-natanux10dnost-1.-modela-pri-izraux10dunu-ploux161ux10dine-in-obsega-pri-razliux10dnih-moux10deh-mnoux17eice-s}{%
+\paragraph{Povprečni delež točk za 90\% , 99\% in 99,9\% natančnost 1.
+modela pri izračunu ploščine in obsega pri različnih močeh množice
+S}\label{povpreux10dni-deleux17e-toux10dk-za-90-99-in-999-natanux10dnost-1.-modela-pri-izraux10dunu-ploux161ux10dine-in-obsega-pri-razliux10dnih-moux10deh-mnoux17eice-s}}
+
+Ob začetku analize podatkov sva si odgovorili na vprašanje kakšen delež
+točk je potreben za 90\% , 99\% in 99,9\% natančnost 1. modela. Program
+je zgeneriral točke na območju {[}0,10{]} x {[}0,10{]}, pri 100 delitvah
+enega intervala - torej mreža 10000 kvadratov, pri različnih močeh
+množice S. Sprva sva podatke generirali tako, da se je za vsako moč
+množice S algoritem ponovil stokrat, ker sva pri takem številu ponovitev
+ugotovili, da obstajajo odstopanja pri deležih, sva se odločili, da
+algoritem poženeva raje tisočkrat za vsako moč množice S. Generiranje
+podatkov je sicer trajalo kar nekaj časa, a sva kasneje z analizo
+ugotovili, da je tovrstn način bolj reprezentativen. Rezultate zadnjega
+poskusa prikazujeta spodja grafa. Opazi se, da funkciji nimata
+nenavadnih odstopanj. To, da ne opazimo odstopanj se zdi logično, saj se
+pri večjem številu iteracij izračunana povprečna vrednost deležev točk,
+ki je potrebna za željeno natančnost bolj približuje pravi povprečni
+vrednosti. Iz spodnjih grafov je moč opaziti, da se povprečni delež točk
+potrebnih za željeno natančnost, zmanjšuje z večanjem moči množice S.
+Videno je verjetno posledica tega, da je območje glede na količino točk
+v večjih množicah precej majhno in so posledično točke zelo gosto
+razporejene po območju. Kot omenjeno model 1 iz vsakega dela mreže na
+katero je razdeljen kvadrat {[}0,10{]} x {[}0,10{]}, vzame le 1 točko
+oziroma nobene, če celica nima točke množice S. Posledica tega je, da so
+neizbrane točke verjetno zelo blizu izbranim in se rezultati
+aproksimacije ne razlikujejo bistveno od eksaktnih vrednosti ploščin in
+obsega.
+
+\newline Grafa prikazujeta potrebne deleže točk za željene natančnosti
+aproksimacije obsega in ploščine. Vidimo lahko, da so potrebni deleži za
+obseg le nekaj odstotnih točk manj kot potrebni deleži za ploščino.
+
+\includegraphics[width=0.5\linewidth]{Koncno_porocilo_files/figure-latex/graf_razlicnih_delezev-1}
+\includegraphics[width=0.5\linewidth]{Koncno_porocilo_files/figure-latex/graf_razlicnih_delezev-2}
+
+\hypertarget{vpliv-razdelitve-obmoux10dja-na-rezultate-1.-metode}{%
+\paragraph{Vpliv razdelitve območja na rezultate 1.
+metode}\label{vpliv-razdelitve-obmoux10dja-na-rezultate-1.-metode}}
+
+dodati morva graf
+
+\hypertarget{primerjava-rezultatov-1.-in-2.-metode-pri-razliux10dnih-moux10deh-mnoux17eice-s}{%
+\paragraph{Primerjava rezultatov 1. in 2. metode pri različnih močeh
+množice
+S}\label{primerjava-rezultatov-1.-in-2.-metode-pri-razliux10dnih-moux10deh-mnoux17eice-s}}
+
+Spodnja grafa prikazujeta povprečne rezultate obeh metod pri tisočih
+ponovitvah metod za vako moč množice S. Tudi pri spodnjih grafih sva
+sprva poskusili algoritem ponoviti le stokrat za vsako moč množice, a je
+prišlo tudi tu do precejšnih odstopanj. Razlog odstopanj je podoben kot
+pri izračunu potrebnih deležev. Torej, da se pri večjem številu
+ponovitev modela izračunana povprečna vrednost napake za vsako moč
+množice bolj približuje pravi napaki. Opazimo lahko, da so napake 2.
+metode bistveno večje, kot napake 1. metode. Razlog za to je, da 2.
+metoda vzame za polmer kroga točko, ki je najbolj oddaljena od težišča
+(povprečja koordinat točk), ta razdalja je lahko v primeru, da je večina
+točk zgoščena okoli neke vrednosti in le majhen delež točk popolnoma
+drugje, precej velika. Ta majhen delež točk, ki se nahaja stran od
+večine ne prispeva veliko pri izračunu povprečja koordinat, zato se
+težišče nahaja bližje območju kjer je večji delež točk množice S.
+Posledično bo krog vzel precej večje območje, kot je konveksna lupina te
+množice in bojo napake aproksimacije zelo velike. Podoben razmislek, kot
+smo ga uporabili pri razlagi, zakaj je za večje množice potreben manjši
+delež točk za željeno točnosti, lahko uporabimo tudi tu, ko opazimo, da
+se napake 2. metode manjšajo z večjim številom točk množice S. Na
+območju {[}0,10{]} x {[}0,10{]} je namreč zelo verjetno, da bojo točke
+večjih množic bolj enakomerno porazdeljene po območju in bo krog
+posledično manj odstopal od dejanske konveksne lupine. Zanimiv podatek,
+ki sva ga opazili je, da na neki toči napaka ne pade pod 55\% za
+ploščino in 10\% za obseg. Razlog tega je verjetno ta, da se z večanjem
+vzorca povečuje verjetnost, da bo najbolj oddaljena točka od težišča
+blizu roba, težišče pa blizu sredini kvadrata in bo s tem krog očrtan
+krog kvadrata.
+
+\newline Pri grafu, ki prikazuje povprečne napake 1. metode lahko
+opazimo, da so napake med 0 in 0.15, a se z večanjem vzorca povečujejo.
+Slednje se dogaja zato, ker je pri izbiri točk pri manjših močeh množice
+bolj verjetno, da so izbrane točke ravno točke, ki sestavljajo konveksno
+lupino. Medtem, ko gostota razporeditve točk večjih množic S vpliva na
+to, da je verjetnost, da izberemo ravno točke ovojnice manjša.
+
+\includegraphics[width=0.5\linewidth]{Koncno_porocilo_files/figure-latex/graf_napak_2.metode-1}
+\includegraphics[width=0.5\linewidth]{Koncno_porocilo_files/figure-latex/graf_napak_2.metode-2}
+
+\hypertarget{metoda-in-njena-uspeux161nost}{%
+\paragraph{2. metoda in njena
+uspešnost}\label{metoda-in-njena-uspeux161nost}}
+
+\begin{center}\includegraphics{Koncno_porocilo_files/figure-latex/graf_napak_za_krog-1} \end{center}
+
+\hypertarget{zakljuux10dek-in-moux17ene-izboljux161ave}{%
+\subsection{Zaključek in možne
+izboljšave}\label{zakljuux10dek-in-moux17ene-izboljux161ave}}
 
 \end{document}
