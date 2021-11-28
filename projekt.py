@@ -366,12 +366,13 @@ def generiraj_primere_bolsi_krog(a,b,st_vseh, k):
     # najvecje st_vseh elementov v množici S
     
     koncni_rezultati_za_krog = [] 
-    for r in tqdm(range(k+1, st_vseh, 5)):
-        for j in range(0,2):
-            koncni_rezultati_za_krog += [krog_boljsi_algoritem(a,b,r, k)]
+    for r in tqdm(range(k+1, st_vseh, 50)):
+        for f in range(3, k, 2):
+            for j in range(0,100):
+                koncni_rezultati_za_krog += [krog_boljsi_algoritem(a,b,r, f)]
     zadnji_rezultati = pd.concat(koncni_rezultati_za_krog, axis=0, ignore_index= True)
     zadnji_rezultati.index.name = 'ID'
-    zadnji_rezultati.to_csv(f'Analiza_modelov/files/rezultati_za_boljsi_krog_{st_vseh}_tock_na_obmocju_{a}_{b}.tsv', sep='\t') 
+    zadnji_rezultati.to_csv(f'Analiza_modelov/files/rezultati_za_boljsi_krog_{st_vseh}_tock_na_obmocju_{a}_{b}_pri_vzorcu_{k}.tsv', sep='\t') 
 
 #PRIMERJAVA 1. IN 2. METODE
 
@@ -490,12 +491,12 @@ def generiraj_primere_za_primerjavo_z_boljso_2_metodo(a,b,m,st_vseh, k):
     koncni_rezultati_za_primerjavo = [] 
     for r in tqdm(range(k+100, st_vseh, 50)):
         for n in range(10, m, 10):
-            for f in range(50, k, 50):
-                for j in range(0,1000):
-                    koncni_rezultati_za_primerjavo += [primerjava_prve_in_krog_boljs_metode(a,b,n,r, k)]
+            for f in range(3, k, 2):
+                for j in range(0,100):
+                    koncni_rezultati_za_primerjavo += [primerjava_prve_in_krog_boljs_metode(a,b,n,r, f)]
     zadnji_rezultati = pd.concat(koncni_rezultati_za_primerjavo, axis=0, ignore_index= True)
     zadnji_rezultati.index.name = 'ID'
-    zadnji_rezultati.to_csv(f'Analiza_modelov/files/rezultati_primerjave_krog_boljse{st_vseh}_tock_na_obmocju_{a}_{b}_pri{j}_iteracijah_in_{m}_delitvah_obmocja.tsv', sep='\t')
+    zadnji_rezultati.to_csv(f'Analiza_modelov/files/rezultati_primerjave_krog_boljse{st_vseh}_tock_na_obmocju_{a}_{b}_pri{j}_iteracijah_in_{m}_delitvah_obmocja_s{k}.tsv', sep='\t')
      
 if __name__ == '__main__':
     print('Generiram podatke')
@@ -503,6 +504,8 @@ if __name__ == '__main__':
     #b = generiraj_primere_za_krog(10,10,20, 3)
     #c = generiraj_primere_za_primerjavo(10,10,101,1001)
     #a = generiraj_primere_za_primerjavo(100,100,101,1001) 
-    d = generiraj_primere_za_primerjavo_z_boljso_2_metodo(10,10,51,1001, 501)
+    d = generiraj_primere_za_primerjavo_z_boljso_2_metodo(10,10,51,501, 50)
+    #l = generiraj_primere_bolsi_krog(10,10,501, 50)
+    #l = generiraj_primere_bolsi_krog(10,10,1001, 501)
 
-       
+        

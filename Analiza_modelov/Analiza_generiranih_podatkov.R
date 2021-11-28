@@ -271,3 +271,52 @@ graf_6_boljsi  <- tabela1000 %>% ggplot(aes(x=Stevilo_vseh_tock_v_mnozici_S, y=R
   ggtitle("Napake druge različice 2. metode, ki so manjše od 0.1") +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
+##-------------------------------------------------------------------
+
+stolpci7 <- c("ID", "Stevilo_vseh_tock_v_množici_S", "Delez_izbranih_tock", "Uspesnost_izracunane_ploscine_1._metode", "Uspesnost_izracunanega_obsega_1._metode", "Relativna_napaka_ploscine_2._metode", "Relativna_napaka_obsega_2._metode", "m", "k")
+tabela7 <- read_table("files/rezultati_primerjave_krog_boljse501_tock_na_obmocju_10_10_pri99_iteracijah_in_51_delitvah_obmocja_s50.tsv", col_names = stolpci7, skip = 1,
+                      locale=locale(encoding = "Windows-1250"))
+
+napake_za_1._m <- tabela7 %>% select(Stevilo_vseh_tock_v_množici_S, Delez_izbranih_tock, Uspesnost_izracunane_ploscine_1._metode, Uspesnost_izracunanega_obsega_1._metode) %>%
+  mutate(Delez_izbranih_tock = round(Delez_izbranih_tock,0)) %>%
+  mutate(Napaka_1._metode_pri_aproksimaciji_ploščine = 100 - Uspesnost_izracunane_ploscine_1._metode) %>%
+  select(-Uspesnost_izracunane_ploscine_1._metode)%>%
+  mutate(Napaka_1._metode_pri_aproksimaciji_obsega = 100 - Uspesnost_izracunanega_obsega_1._metode) %>%
+  select(-c(Uspesnost_izracunanega_obsega_1._metode, Delez_izbranih_tock)) %>%
+  pivot_longer(c(-Stevilo_vseh_tock_v_množici_S ),names_to = "Napaka_aproksimacije", values_to = "Vrednosti") %>%
+  group_by(Stevilo_vseh_tock_v_množici_S, Napaka_aproksimacije) %>% summarize(Napake= mean(Vrednosti))
+napake_za_1._m$Napaka_aproksimacije <- sub("Napaka_1._metode_pri_aproksimaciji_ploščine", "Napaka 1. metode pri aproksimaciji ploščine", napake_za_1._m$Napaka_aproksimacije )
+napake_za_1._m$Napaka_aproksimacije <- sub("Napaka_1._metode_pri_aproksimaciji_obsega", "Napaka 1. metode pri aproksimaciji obsega", napake_za_1._m$Napaka_aproksimacije ) 
+
+graf_napak_1.m <- napake_za_1._m %>% ggplot(aes(x=Stevilo_vseh_tock_v_množici_S, y=Napake, palette="Pastel1", col=Napaka_aproksimacije)) + 
+  geom_line() + 
+  geom_point()+
+  xlab('Število vseh točk v množici S') + 
+  ylab('Povprečna napaka aproksimacije') +
+  scale_x_continuous(breaks = 50*0:1000) +
+  scale_y_continuous(breaks = 0.5*0:20) +
+  ggtitle('Povprečne napake aproksimacije 1. metode pri različnih velikostih vzorca') +
+  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
+#--
+
+tabela_napak_k <- tabela7 %>% select(c(Stevilo_vseh_tock_v_množici_S, Relativna_napaka_ploscine_2._metode, Relativna_napaka_obsega_2._metode, k))
+
+napake_za_2._m <- tabela_napak_k %>% 
+  mutate(Napaka_2._metode_pri_aprokismaciji_ploščine = Relativna_napaka_ploscine_2._metode) %>%
+  mutate(Napaka_2._metode_pri_aprokismaciji_obsega = Relativna_napaka_obsega_2._metode) %>%
+  select(-c(Relativna_napaka_obsega_2._metode, Relativna_napaka_ploscine_2._metode)) %>%
+  pivot_longer(c(-Stevilo_vseh_tock_v_množici_S, -k),names_to = "Napaka_aproksimacije_2._metode", values_to = "Vrednosti_2._metode") %>%
+  group_by(Stevilo_vseh_tock_v_množici_S, Napaka_aproksimacije_2._metode) %>% summarize(Napake_2._metode= mean(Vrednosti_2._metode))
+
+napake_za_2._m$Napaka_aproksimacije_2._metode <- sub("Napaka_2._metode_pri_aprokismaciji_ploščine", "Napaka 2. metode pri aproksimaciji ploščine", napake_za_2._m$Napaka_aproksimacije_2._metode)
+napake_za_2._m$Napaka_aproksimacije_2._metode <- sub("Napaka_2._metode_pri_aprokismaciji_obsega", "Napaka 2. metode pri aproksimaciji obsega", napake_za_2._m$Napaka_aproksimacije_2._metode) 
+
+graf_napak_2.m <- napake_za_2._m%>% ggplot(aes(x=Stevilo_vseh_tock_v_množici_S, y=Napake_2._metode, palette="Pastel1", col=Napaka_aproksimacije_2._metode)) + 
+  geom_line() + 
+  geom_point()+
+  xlab('Število vseh točk v množici S') + 
+  ylab('Povprečna napaka aproksimacije') +
+  scale_x_continuous(breaks = 50*0:1000) +
+  scale_y_continuous(breaks = 5*0:75) +
+  ggtitle('Povprečne napake aproksimacije 2. metode pri različnih velikostih vzorca') +
+  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
