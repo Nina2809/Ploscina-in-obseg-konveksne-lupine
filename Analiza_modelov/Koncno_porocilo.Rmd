@@ -126,19 +126,28 @@ print(graf_napak_1.metode)
 print(graf_napak_2.metode)
 ```
 
-Seveda z rezultati, ki jih predstavljata zgornja grafa nisva bili zadovoljni in sva tudi hitro ugotovili, da ideja, da za vzorec vzamemo celotno množico S ni najboljša. Algoritem sva izboljšali, tako da sva 2. metodo implementirali na podmnožici množice S. Spodaj so prikazani rezultati te različice 2. metode v primerjavi s 1. metodo.
+Seveda z rezultati, ki jih predstavljata zgornja grafa nisva bili zadovoljni in sva tudi hitro ugotovili, da ideja, da za vzorec vzamemo celotno množico S ni najboljša. Algoritem sva izboljšali, tako da sva 2. metodo implementirali na podmnožici množice S. Spodaj so prikazani rezultati, ki sva jih ob analiziranju te različice dobili.
 
-#### Primerjava rezultatov druge različice 1. metode in 2. metode pri različnih močeh množice S
+#### Relativne napake aproksimirane ploščine pri drugi različice 2. metode pri različnih močeh množice S in pri različnih močeh podmnožice
 
+Ob novi različici 2. metode naju je najprej zanimalo, kako različno število točk podmnožice vpliva na rezultate metode. Ponovno sva algoritem ponovili tisočkrat za vsako moč množice S na območju [0,10] x [0,10]. Iz spodnjih grafov lahko vidimo, da so napake, v kolikor izberemo preveč točk v podmnožici S, podobno visoke kot pri prvi različici. Razlog tega je verjetno to, da je lahko pri velikem številu točk polmer kroga ponovno zelo velik, zaradi gostote porazdelitve točk in najbolj oddaljene točke. Hkrati pa lahko pri določenih močeh podmnožice povprečno dosegamo boljše rezultate, kot smo jih dosegali pri prvi različici 2. metode, ko smo računali ploščino in obseg kroga, ki zajame vse točke množice S. 
 
-#### Uspešnost druge različice 2. metode
-
-```{r graf_napak_za_krog, echo=FALSE, message=FALSE,  fig.align='center'}
-print(graf_napak_za_krog)
+```{r graf_5, echo=FALSE, message=FALSE,  fig.align='center'}
+print(graf_5)
 ```
 
+### Najboljše uspešnosti 2. metode pri aproksimaciji ploščine
+
+Zanimalo naju je tudi ali lahko druga različica 2. metode kdaj dosega napake aproksimacije pod 0.1. Z analizo sva ugotovili, da so napake v posameznih primerih res lahko zelo majhne. Primeri, ko se pri različnih močeh množice S zgodi, da je napaka aproksimacije manj kot 0.1 so prikazani spodaj. Vendar se nama zdi, da so ti posamezni primeri zelo naključni in iz njih ne moremo sklepati, kaj bi bilo optimalno število točk v podmnožici za doseganje najboljših rezultatov.
+
+```{r graf_5_boljši, echo=FALSE, message=FALSE,  fig.show="hold", out.width="50%"}
+print(graf_5_boljsi)
+print(graf_6_boljsi)
+```
 
 ## Zaključek in možne izboljšave
+
+Obe prikazani metodi dobro delujeta, vendar sta zelo časovno zahtevni. Na rezultate pri obeh algoritmih sva čakali dolgo časa, kar potrjuje, da je algoritem precej počasen. Poleg izboljšave algoritma na področju časovne zahtevnosti bi bilo zanimivo pogledati, kako bi se na rezultatih prve metode izražalo to, da bi območje razdelili na dejanske pravokotnike in ne na kvadrate. Poleg tega pa bi bilo zanimivo videti rezultate druge različice 2. metode pri vplivu na izbiro točk v podmnočici. Zdi se nama, da je druga različica 2. metode še vedno preveč odvisna od naključne izbire točk v podmnožico. Zato so lahko rezultati tudi pri enakih močeh podmnožice popolnoma različni. 
 
 
 

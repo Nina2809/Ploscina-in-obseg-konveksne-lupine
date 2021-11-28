@@ -170,6 +170,31 @@ tabela_uspesnosti_vec_kot_90_krog <- tabela1 %>% select(-c(ID, Relativna_napaka_
 
 #PLOŠČINA
 
+stolpci3 <- c("ID", "Stevilo_vseh_tock_v_množici_S", "Relativna_napaka_ploscine_2._metode", "Relativna_napaka_obsega_2._metode")
+tabela3 <- read_table("files/rezultati_za_krog_51_tock_na_obmocju_10_10.tsv", col_names = stolpci3, skip=1,
+                      locale=locale(encoding = "Windows-1250"))
+
+PL_krog <- tabela3 %>% select(-c(ID, Relativna_napaka_obsega_2._metode)) %>%
+                                group_by(Stevilo_vseh_tock_v_množici_S) %>% summarise(povprecna_napaka_pl_krog = mean(Relativna_napaka_ploscine_2._metode))
+  
+O_krog <- tabela3 %>% select(-c(ID, Relativna_napaka_ploscine_2._metode )) %>%
+  group_by(Stevilo_vseh_tock_v_množici_S) %>% summarise(povprecna_napaka_o_krog = mean(Relativna_napaka_obsega_2._metode))
+
+krog_povp_napake <- inner_join(PL_krog, O_krog, by = "Stevilo_vseh_tock_v_množici_S")
+
+krog_p_n <- krog_povp_napake %>% pivot_longer(-c(Stevilo_vseh_tock_v_množici_S), names_to = "Napaka", values_to = "Vrednosti_napak")
+
+krog_p_n$Napaka <- sub("povprecna_napaka_o_krog", "Povprecna napaka 2. metode pri aproksimaciji obsega", krog_p_n$Napaka)
+krog_p_n$Napaka <- sub("povprecna_napaka_pl_krog", "Povprecna napaka 2. metode pri aproksimaciji ploščine",krog_p_n$Napaka )
+
+graf_napak_za_krog <- krog_p_n %>% ggplot(aes(x=Stevilo_vseh_tock_v_množici_S, y=Vrednosti_napak , palette="Pastel1", col=Napaka)) + 
+  geom_line() + 
+  geom_point()+
+  xlab('Število vseh točk v množici S') + 
+  ylab('Povprečna napaka aproksimacije') +
+  scale_x_continuous(breaks = 50*0:1000) +
+  ggtitle('Povprečne napake aproksimacije 2. metode pri različnih velikostih vzorca') +
+  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
 
 ### primerjava uspešnosti 2. metode v odvisnosti m
@@ -188,8 +213,61 @@ graf_m <- tabela_3 %>% ggplot(aes(x=Stevilo_vseh_tock_v_množici_S, y=Napake, pa
   ylab('Povprečna uspešnost aproksimacije') +
   scale_x_continuous(breaks = 50*0:1000) +
   scale_y_continuous(breaks = 5*0:75) +
-  ggtitle('Povprečne uspešnost aproksimacije ploščine 2. metode pri različnih močeh množice S \n in pri različnih delitvah območja') +
+  ggtitle('Povprečne uspešnost aproksimacije ploščine 2. metode pri različnih močeh \n množice S  in pri različnih delitvah območja') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
 
+#2. metoda - izboljšana 
+
+stolpci5_100_tock <- c("ID", "Stevilo_vseh_tock_v_mnozici_S",  "Relativna_napaka_ploscine_2._metode", "Relativna_napaka_obsega_2._metode", "k")
+tabela5 <- read_table("files/rezultati_za_boljsi_krog_501_tock_na_obmocju_10_10_pri_vzorcu_50.tsv", col_names = stolpci5_100_tock, skip = 1,
+                      locale=locale(encoding = "Windows-1250"))
+tabela5_povprecja <- tabela5 %>% select(c(Stevilo_vseh_tock_v_mnozici_S,  Relativna_napaka_ploscine_2._metode, k)) %>%group_by(Stevilo_vseh_tock_v_mnozici_S,k) %>% summarise(Napake = mean(Relativna_napaka_ploscine_2._metode))
+tabela5_povprecja$k <-  as.character(tabela5_povprecja$k)  
+tabela5_povprecja <- tabela5_povprecja %>% rename("Stevilo_tock_v_podmnozici" = k)
+
+graf_5 <- tabela5_povprecja %>% ggplot(aes(x=Stevilo_tock_v_podmnozici, y=Napake, palette="Dark2", color=Stevilo_tock_v_podmnozici )) + 
+  geom_point()+
+  facet_wrap(.~Stevilo_vseh_tock_v_mnozici_S, ncol=3)  + 
+  xlab('Število točk v podmnožici = vzorcu') +
+  scale_color_discrete(breaks=c("3", "5", "7", "9", "11", "13", "15", "17", "19", "21", "23", "25", "27", "29", "31", "33", "35", "37", "39", "41","43", "45", "47", "49")) +
+  ylab('Povprečna uspešnost aproksimacije') +
+  scale_y_continuous(breaks = 5*0:75) +
+  scale_x_discrete(limits = c("3", "5", "7", "9", "11", "13", "15", "17", "19", "21", "23", "25", "27", "29", "31", "33", "35", "37", "39", "41","43", "45", "47", "49")) +
+  ggtitle('Povprečne uspešnost aproksimacije ploščine druge različice 2. metode pri različnih \n  močeh množice S in pri različnih močeh podmnožice') +
+  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
+
+tabela5 <- tabela5 %>%  filter(Relativna_napaka_ploscine_2._metode <= 0.1)
+tabela5$k <-  as.character(tabela5$k) 
+tabela5$Stevilo_vseh_tock_v_mnozici_S <-  as.character(tabela5$Stevilo_vseh_tock_v_mnozici_S)
+tabela5 <- tabela5 %>% rename("Stevilo_tock_v_podmnozici" = k)
+graf_5_boljsi  <- tabela5 %>% ggplot(aes(x=Stevilo_vseh_tock_v_mnozici_S, y=Relativna_napaka_ploscine_2._metode, palette="Pastel1", fill=Stevilo_tock_v_podmnozici)) + 
+  geom_bar(position="dodge", stat = "identity" ) +
+  xlab('Število vseh točk v množici S') +
+  ylab('Relativna napaka aproksimacije') +
+  #scale_y_continuous(breaks = 0.02*0:0.08) +
+  scale_fill_discrete(breaks=c("3", "5", "7", "9", "11", "13", "15", "17", "19", "21", "23", "25", "27", "29", "31", "33", "35", "37", "39", "41","43", "45", "47", "49")) +
+  scale_x_discrete(limits = c("51", "151", "201", "301","351", "401", "451")) +
+  ggtitle("Napake druge različice 2. metode, ki so manjše od 0.1") +
+  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
+
+#------------
+stolpci6_1000_tock <- c("ID", "Stevilo_vseh_tock_v_mnozici_S",  "Relativna_napaka_ploscine_2._metode", "Relativna_napaka_obsega_2._metode", "k")
+tabela1000 <- read_table("files/rezultati_za_boljsi_krog_1001_tock_na_obmocju_10_10_pri_vzorcu_501.tsv", col_names = stolpci6_1000_tock, skip = 1,
+                      locale=locale(encoding = "Windows-1250"))
+
+tabela1000 <- tabela1000 %>%  filter(Relativna_napaka_ploscine_2._metode <= 0.1)  
+tabela1000$k <-  as.character(tabela1000$k) 
+tabela1000 <- tabela1000 %>% rename("Stevilo_tock_v_podmnozici" = k)
+tabela1000$Stevilo_vseh_tock_v_mnozici_S <-  as.character(tabela1000$Stevilo_vseh_tock_v_mnozici_S)
+
+graf_6_boljsi  <- tabela1000 %>% ggplot(aes(x=Stevilo_vseh_tock_v_mnozici_S, y=Relativna_napaka_ploscine_2._metode, palette="Pastel1", fill=Stevilo_tock_v_podmnozici)) + 
+  geom_bar(position="dodge", stat = "identity" ) +
+  xlab('Število vseh točk v množici S') +
+  ylab('Relativna napaka aproksimacije') +
+  #scale_y_continuous(breaks = 0.02*0:0.08) +
+  scale_fill_discrete(breaks=c("3", "5", "7", "9", "11", "13", "15", "17", "19", "21", "23","25", "27", "29", "31", "33", "35", "37", "39", "41","43", "45", "47", "49")) +
+  scale_x_discrete(limits = c("502", "552", "602", "652","702", "752", "802", "852", "902", "952")) +
+  ggtitle("Napake druge različice 2. metode, ki so manjše od 0.1") +
+  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
