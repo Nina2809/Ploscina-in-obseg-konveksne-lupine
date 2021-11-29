@@ -241,6 +241,8 @@ tabela5 <- tabela5 %>%  filter(Relativna_napaka_ploscine_2._metode <= 0.1)
 tabela5$k <-  as.character(tabela5$k) 
 tabela5$Stevilo_vseh_tock_v_mnozici_S <-  as.character(tabela5$Stevilo_vseh_tock_v_mnozici_S)
 tabela5 <- tabela5 %>% rename("Stevilo_tock_v_podmnozici" = k)
+
+  
 graf_5_boljsi  <- tabela5 %>% ggplot(aes(x=Stevilo_vseh_tock_v_mnozici_S, y=Relativna_napaka_ploscine_2._metode, palette="Pastel1", fill=Stevilo_tock_v_podmnozici)) + 
   geom_bar(position="dodge", stat = "identity" ) +
   xlab('Število vseh točk v množici S') +
@@ -255,6 +257,7 @@ graf_5_boljsi  <- tabela5 %>% ggplot(aes(x=Stevilo_vseh_tock_v_mnozici_S, y=Rela
 stolpci6_1000_tock <- c("ID", "Stevilo_vseh_tock_v_mnozici_S",  "Relativna_napaka_ploscine_2._metode", "Relativna_napaka_obsega_2._metode", "k")
 tabela1000 <- read_table("files/rezultati_za_boljsi_krog_1001_tock_na_obmocju_10_10_pri_vzorcu_501.tsv", col_names = stolpci6_1000_tock, skip = 1,
                       locale=locale(encoding = "Windows-1250"))
+
 
 tabela1000 <- tabela1000 %>%  filter(Relativna_napaka_ploscine_2._metode <= 0.1)  
 tabela1000$k <-  as.character(tabela1000$k) 

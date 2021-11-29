@@ -147,6 +147,8 @@ print(graf_6_boljsi)
 
 #### Primerjava rezultatov druge različice 1. metode in 2. metode pri različnih močeh množice S
 
+Ob generiranju boljše različice 2. metode, sva reultate primerjali tudi s prvo metodo. Tokrat sva ponovno vzeli območje [0,10]x[0,10], maksimalna moč množice je bila 500, območje je bilo razdeljeno na maksimalno 50 kvadratov in maksimalno točk v podmnožici množice S je bilo 50. Zaradi časovne zahtevnosti sva v tem primeru algoritem ponovili le stokrat za vsako moč množice S. Iz spodnjih rezultatov je moč opaziti, da se je povprečna napaka 2. metode v tej različici pomanjšala, a kljub temu rezultati še vedno niso primerljivi s 1. metodo. Pomankljivost 2. metode je še vedno ta, da so rezultati preveč odvisni od gostote in razporeditve točk v množici S. Zaradi tega so lahko narisani krogi preveliki glede na dejansko ovojnico množice S. 
+
 ```{r graf_napak_2.m, echo=FALSE, message=FALSE, fig.show="hold", out.width="50%"}
 print(graf_napak_1.m)
 print(graf_napak_2.m)
