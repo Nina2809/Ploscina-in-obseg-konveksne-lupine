@@ -2,7 +2,7 @@
 ---
 title: "Poročilo projekta - Aproksimacija ploščine in obsega konveksne lupine"
 author: "Nina Velkavrh in Ajda Majhenič"
-date: "26.11.2021"
+date: "2.12.2021"
 output:
   pdf_document: default
   html_document: default
