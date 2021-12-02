@@ -30,9 +30,9 @@ tabela_uspesnosti_vec_kot_90 <- tabela1 %>% select(-c(ID, Relativna_napaka_obseg
 graf_povprecij_2 <- ggplot(data=tabela_uspesnosti_vec_kot_90, aes(x=Stevilo_vseh_tock, y=Delez_tock)) + 
   geom_point(color=rgb(0.8,0.4,0.1,0.7)) + 
   geom_line(color=rgb(0.8,0.4,0.1,0.7)) + 
-  xlab('Število vseh točk v množici S') + 
-  ylab('Povprečno število deleža izbranih točk') +
-  ggtitle('Primerjava povprečnega deleža izbranih točk \n za 90% natančnost metode') +
+  xlab('Stevilo vseh točk v množici S') + 
+  ylab('Povprecno stevilo deleza izbranih tock') +
+  ggtitle('Primerjava povprecnega deleza izbranih točk \n za 90% natancnost metode') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
 # izbira podatkov, kjer je uspešnost več kot 99%
@@ -64,9 +64,9 @@ graf_razlicnih_delezev <- skupna_tabela %>% ggplot(aes(x=Stevilo_vseh_tock, y=Vr
   geom_line() +
   scale_x_continuous(breaks = 50*0:1000) +
   scale_y_continuous(breaks = 1*0:100) +
-  xlab('Število vseh točk v množici S') + 
-  ylab('Povprečni delež točk v vzorcu') +
-  ggtitle('Primerjava povprečnega deleža izbranih točk \n za 90%, 99% in 99,9% natančnost 1. metode \n pri aproksimaciji ploščine konveksne lupine') +
+  xlab('Stevilo vseh tock v mnozici S') + 
+  ylab('Povprecni delez tock v vzorcu') +
+  ggtitle('Primerjava povprecnega deleza izbranih tock \n za 90%, 99% in 99,9% natancnost 1. metode \n pri aproksimaciji ploscine konveksne lupine') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
 #USPEŠNOSTI ZA OBSEG
@@ -98,11 +98,11 @@ skupna_tabela_obseg$Povprečni_delež_točk <- sub("Delez_tock", "Povprečni del
 graf_razlicnih_delezev_obseg <- skupna_tabela_obseg %>% ggplot(aes(x=Stevilo_vseh_tock, y=Vrednosti, palette="Pastel1", col=Povprečni_delež_točk)) + 
   geom_point()+
   geom_line() +
-  xlab('Število vseh točk v množici S') + 
-  ylab('Povprečni delež točk v vzorcu') +
+  xlab('Stevilo vseh tock v mnozici S') + 
+  ylab('Povprecni delez tock v vzorcu') +
   scale_x_continuous(breaks = 50*0:1000) +
   scale_y_continuous(breaks = 1*0:100) +
-  ggtitle('Primerjava povprečnega deleža izbranih točk \n za 90%, 99% in 99,9% natančnost 1. metode \n pri aproksimaciji obsega konveksne lupine') +
+  ggtitle('Primerjava povprecnega deleza izbranih tock \n za 90%, 99% in 99,9% natancnost 1. metode \n pri aproksimaciji obsega konveksne lupine') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 # napake kroga
 
@@ -131,11 +131,11 @@ napake_za_1._metodo$Napaka_aproksimacije <- sub("Napaka_1._metode_pri_aproksimac
 graf_napak_1.metode <- napake_za_1._metodo %>% ggplot(aes(x=Stevilo_vseh_tock_v_množici_S, y=Napake, palette="Pastel1", col=Napaka_aproksimacije)) + 
   geom_line() + 
   geom_point()+
-  xlab('Število vseh točk v množici S') + 
-  ylab('Povprečna napaka aproksimacije') +
+  xlab('Stevilo vseh tock v mnozici S') + 
+  ylab('Povprecna napaka aproksimacije') +
   scale_x_continuous(breaks = 50*0:1000) +
   scale_y_continuous(breaks = 0.5*0:20) +
-  ggtitle('Povprečne napake aproksimacije 1. metode pri različnih velikostih vzorca') +
+  ggtitle('Povprecne napake aproksimacije 1. metode pri razlicnih velikostih vzorca') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
 #Napake 2. metode
@@ -185,15 +185,15 @@ krog_povp_napake <- inner_join(PL_krog, O_krog, by = "Stevilo_vseh_tock_v_množi
 krog_p_n <- krog_povp_napake %>% pivot_longer(-c(Stevilo_vseh_tock_v_množici_S), names_to = "Napaka", values_to = "Vrednosti_napak")
 
 krog_p_n$Napaka <- sub("povprecna_napaka_o_krog", "Povprecna napaka 2. metode pri aproksimaciji obsega", krog_p_n$Napaka)
-krog_p_n$Napaka <- sub("povprecna_napaka_pl_krog", "Povprecna napaka 2. metode pri aproksimaciji ploščine",krog_p_n$Napaka )
+krog_p_n$Napaka <- sub("povprecna_napaka_pl_krog", "Povprecna napaka 2. metode pri aproksimaciji ploscine",krog_p_n$Napaka )
 
 graf_napak_za_krog <- krog_p_n %>% ggplot(aes(x=Stevilo_vseh_tock_v_množici_S, y=Vrednosti_napak , palette="Pastel1", col=Napaka)) + 
   geom_line() + 
   geom_point()+
-  xlab('Število vseh točk v množici S') + 
-  ylab('Povprečna napaka aproksimacije') +
+  xlab('Stevilo vseh tock v mnozici S') + 
+  ylab('Povprecna napaka aproksimacije') +
   scale_x_continuous(breaks = 50*0:1000) +
-  ggtitle('Povprečne napake aproksimacije 2. metode pri različnih velikostih vzorca') +
+  ggtitle('Povprecne napake aproksimacije 2. metode pri razlicnih velikostih vzorca') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
 
@@ -209,11 +209,11 @@ tabela_3 <- tabela_3 %>% rename("Število_delitev" = m)
 graf_m <- tabela_3 %>% ggplot(aes(x=Stevilo_vseh_tock_v_množici_S, y=Napake, palette="Dark2", color=Število_delitev )) + 
   geom_point()+
   scale_color_discrete(breaks=c("10", "20", "30", "40", "50", "60", "70", "80", "90", "100")) + 
-  xlab('Število vseh točk v množici S') + 
-  ylab('Povprečna uspešnost aproksimacije') +
+  xlab('Stevilo vseh tock v mnozici S') + 
+  ylab('Povprecna uspesnost aproksimacije') +
   scale_x_continuous(breaks = 50*0:1000) +
   scale_y_continuous(breaks = 5*0:75) +
-  ggtitle('Povprečne uspešnost aproksimacije ploščine 2. metode pri različnih močeh \n množice S  in pri različnih delitvah območja') +
+  ggtitle('Povprecne uspesnost aproksimacije ploscine 2. metode pri razlicnih \n moceh mnozice S  in pri razlicnih delitvah obmocja') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
 
@@ -229,12 +229,12 @@ tabela5_povprecja <- tabela5_povprecja %>% rename("Stevilo_tock_v_podmnozici" = 
 graf_5 <- tabela5_povprecja %>% ggplot(aes(x=Stevilo_tock_v_podmnozici, y=Napake, palette="Dark2", color=Stevilo_tock_v_podmnozici )) + 
   geom_point()+
   facet_wrap(.~Stevilo_vseh_tock_v_mnozici_S, ncol=3)  + 
-  xlab('Število točk v podmnožici = vzorcu') +
+  xlab('Stevilo tock v podmnozici = vzorcu') +
   scale_color_discrete(breaks=c("3", "5", "7", "9", "11", "13", "15", "17", "19", "21", "23", "25", "27", "29", "31", "33", "35", "37", "39", "41","43", "45", "47", "49")) +
-  ylab('Povprečna uspešnost aproksimacije') +
+  ylab('Povprecna uspesnost aproksimacije') +
   scale_y_continuous(breaks = 5*0:75) +
   scale_x_discrete(limits = c("3", "5", "7", "9", "11", "13", "15", "17", "19", "21", "23", "25", "27", "29", "31", "33", "35", "37", "39", "41","43", "45", "47", "49")) +
-  ggtitle('Povprečne uspešnost aproksimacije ploščine druge različice 2. metode pri različnih \n  močeh množice S in pri različnih močeh podmnožice') +
+  ggtitle('Povprecne uspesnost aproksimacije ploscine druge razlicice 2. metode \n pri razlicnih moceh množice S in pri razlicnih moceh podmnozice') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
 tabela5 <- tabela5 %>%  filter(Relativna_napaka_ploscine_2._metode <= 0.1)
@@ -245,12 +245,12 @@ tabela5 <- tabela5 %>% rename("Stevilo_tock_v_podmnozici" = k)
   
 graf_5_boljsi  <- tabela5 %>% ggplot(aes(x=Stevilo_vseh_tock_v_mnozici_S, y=Relativna_napaka_ploscine_2._metode, palette="Pastel1", fill=Stevilo_tock_v_podmnozici)) + 
   geom_bar(position="dodge", stat = "identity" ) +
-  xlab('Število vseh točk v množici S') +
+  xlab('Stevilo vseh tock v mnozici S') +
   ylab('Relativna napaka aproksimacije') +
   #scale_y_continuous(breaks = 0.02*0:0.08) +
   scale_fill_discrete(breaks=c("3", "5", "7", "9", "11", "13", "15", "17", "19", "21", "23", "25", "27", "29", "31", "33", "35", "37", "39", "41","43", "45", "47", "49")) +
   scale_x_discrete(limits = c("51", "151", "201", "301","351", "401", "451")) +
-  ggtitle("Napake druge različice 2. metode, ki so manjše od 0.1") +
+  ggtitle("Napake druge razlicice 2. metode, ki so manjse od 0.1") +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
 #------------
@@ -266,12 +266,12 @@ tabela1000$Stevilo_vseh_tock_v_mnozici_S <-  as.character(tabela1000$Stevilo_vse
 
 graf_6_boljsi  <- tabela1000 %>% ggplot(aes(x=Stevilo_vseh_tock_v_mnozici_S, y=Relativna_napaka_ploscine_2._metode, palette="Pastel1", fill=Stevilo_tock_v_podmnozici)) + 
   geom_bar(position="dodge", stat = "identity" ) +
-  xlab('Število vseh točk v množici S') +
+  xlab('Stevilo vseh tock v množici S') +
   ylab('Relativna napaka aproksimacije') +
   #scale_y_continuous(breaks = 0.02*0:0.08) +
   scale_fill_discrete(breaks=c("3", "5", "7", "9", "11", "13", "15", "17", "19", "21", "23","25", "27", "29", "31", "33", "35", "37", "39", "41","43", "45", "47", "49")) +
   scale_x_discrete(limits = c("502", "552", "602", "652","702", "752", "802", "852", "902", "952")) +
-  ggtitle("Napake druge različice 2. metode, ki so manjše od 0.1") +
+  ggtitle("Napake druge razlicice 2. metode, ki so manjse od 0.1") +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 
 ##-------------------------------------------------------------------
@@ -288,17 +288,17 @@ napake_za_1._m <- tabela7 %>% select(Stevilo_vseh_tock_v_množici_S, Delez_izbra
   select(-c(Uspesnost_izracunanega_obsega_1._metode, Delez_izbranih_tock)) %>%
   pivot_longer(c(-Stevilo_vseh_tock_v_množici_S ),names_to = "Napaka_aproksimacije", values_to = "Vrednosti") %>%
   group_by(Stevilo_vseh_tock_v_množici_S, Napaka_aproksimacije) %>% summarize(Napake= mean(Vrednosti))
-napake_za_1._m$Napaka_aproksimacije <- sub("Napaka_1._metode_pri_aproksimaciji_ploščine", "Napaka 1. metode pri aproksimaciji ploščine", napake_za_1._m$Napaka_aproksimacije )
+napake_za_1._m$Napaka_aproksimacije <- sub("Napaka_1._metode_pri_aproksimaciji_ploščine", "Napaka 1. metode pri aproksimaciji ploscine", napake_za_1._m$Napaka_aproksimacije )
 napake_za_1._m$Napaka_aproksimacije <- sub("Napaka_1._metode_pri_aproksimaciji_obsega", "Napaka 1. metode pri aproksimaciji obsega", napake_za_1._m$Napaka_aproksimacije ) 
 
 graf_napak_1.m <- napake_za_1._m %>% ggplot(aes(x=Stevilo_vseh_tock_v_množici_S, y=Napake, palette="Pastel1", col=Napaka_aproksimacije)) + 
   geom_line() + 
   geom_point()+
-  xlab('Število vseh točk v množici S') + 
-  ylab('Povprečna napaka aproksimacije') +
+  xlab('Stevilo vseh tock v mnozici S') + 
+  ylab('Povprecna napaka aproksimacije') +
   scale_x_continuous(breaks = 50*0:1000) +
   scale_y_continuous(breaks = 0.5*0:20) +
-  ggtitle('Povprečne napake aproksimacije 1. metode pri različnih velikostih vzorca') +
+  ggtitle('Povprecne napake aproksimacije 1. metode pri razlicnih velikostih vzorca') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
 #--
 
@@ -317,9 +317,9 @@ napake_za_2._m$Napaka_aproksimacije_2._metode <- sub("Napaka_2._metode_pri_aprok
 graf_napak_2.m <- napake_za_2._m%>% ggplot(aes(x=Stevilo_vseh_tock_v_množici_S, y=Napake_2._metode, palette="Pastel1", col=Napaka_aproksimacije_2._metode)) + 
   geom_line() + 
   geom_point()+
-  xlab('Število vseh točk v množici S') + 
-  ylab('Povprečna napaka aproksimacije') +
+  xlab('Stevilo vseh tock v množici S') + 
+  ylab('Povprecna napaka aproksimacije') +
   scale_x_continuous(breaks = 50*0:1000) +
   scale_y_continuous(breaks = 5*0:75) +
-  ggtitle('Povprečne napake aproksimacije 2. metode pri različnih velikostih vzorca') +
+  ggtitle('Povprecne napake aproksimacije 2. metode pri razlicnih velikostih vzorca') +
   theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=0.5))
