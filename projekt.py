@@ -101,7 +101,11 @@ def konveksna_lupina(tocke, n):
 #Uporaba funkcije konveksna_lupina na množici točk, ki ima poljubno moč in točke
 # Pri izbiri točk se omejiva na interval [a,b]
 
-def nakljucna_mnozica(qty,a,b):
+def nakljucna_mnozica(qty,a,b): 
+    '''
+    definicija za naključno množico, ki določi množico moči qty s točkami z naključno izbranimi
+    x koordinatami iz območja [0,a] in  y koordinatami iz območja [0,b]
+    '''
     rangeX = (0, a)
     rangeY = (0, b)
     randPoints = []
@@ -121,7 +125,11 @@ def nakljucna_mnozica(qty,a,b):
 
 #### PLOŠČINA
 
+
 def ploscina(seznam_tock):
+    '''
+    izračun ploščine po modelu shoelace 
+    '''
     
     ploscina = 0
 
@@ -136,6 +144,9 @@ def ploscina(seznam_tock):
 #### OBSEG
 
 def obseg(seznam_tock):
+    '''
+    definicija obsega, ki računa razdalje med točkami v konveksni lupini in jih sešteva v obseg
+    '''
 
     obseg = 0    
 
@@ -149,7 +160,12 @@ def obseg(seznam_tock):
 
 # 1. METODA ZA APROKSIMACIJO PLOŠČINE IN OBSEGA
 
+
 def razdeli_pravokotnik(a,b,m):
+    '''
+    prva razdelitev območja [0,a] x [0,b] na pravokotnike, določimo na koliko delov bosta razdeljena intervala a in b,
+    dolocimo 4 točke kot robna oglišča vsake celice, za določitev točke uporabiva zgoraj definirano Tocko
+    '''
     seznam_pravokotnikov = []
     dolzina = a/m
     visina = b/m
@@ -164,6 +180,10 @@ def razdeli_pravokotnik(a,b,m):
     return(seznam_pravokotnikov)
 
 def razdeli_pravokotnik2(a,b,m):
+    ''''
+    druga (bolj kompaktna) definicija za razdelitev pravokotnika [0,a] x [0,b] na manjše celice,
+    določi x1, x2, y1, y2, ne kot točke ampak le kot vrednosti koordinat
+    '''
     seznam_pravokotnikov = []
     dolzina = a/m
     visina = b/m
@@ -180,6 +200,10 @@ def razdeli_pravokotnik2(a,b,m):
 #razdeli_pravokotnik2(4,4,4)
 
 def izberi_tocke(a,b,m,mnozica):
+    '''
+    funkcija na razdeljenem območju iz vsake celice izbere eno naključno točko, v kolikor celica ne vsebuje tocke iz naključne množice,
+    celico preskoči 
+    '''
     pravokotniki = razdeli_pravokotnik2(a,b,m)
     izbrane = []
     for pravokotnik in pravokotniki:
@@ -196,10 +220,16 @@ def izberi_tocke(a,b,m,mnozica):
             izbrane.append(vsebovane[random.randint(0,u-1)])
     return(izbrane)
 
+#primera za preizkus delovanja algoritma
 mnozica = nakljucna_mnozica(20,4,4)
 izberi_tocke(4,4,4,mnozica)
 
 def primerjava(a,b,m,st_vseh):
+    '''
+    izračun eksaktne konveksne lupine naključne množice, njeno ploščino in obseg -> 
+    izbira nakljucnih točk iz razdelitve območja in izračun eksaktne konveksne lupine za množico izbranih točk,
+    izračun uspešnosti modela: 100 - relativna napaka med obsegom/ploščino eksaktne lupine in lupine izbranih točk
+    '''
     mnozica = nakljucna_mnozica(st_vseh,a,b)
     kon_lup_eksaktna = konveksna_lupina(mnozica, len(mnozica))
 
@@ -219,6 +249,8 @@ def primerjava(a,b,m,st_vseh):
     delez_izbranih_tock = (len(izbrane)/len(mnozica))*100
 
 
+# zapis rezultatov v data frame:
+
     rezultati = {'st_vseh': [], 'delez_izbranih_tock': [], 'relativna_napaka_ploscine': [], 'relativna_napaka_obseg' : [] }
     rezultati['st_vseh'] += [st_vseh]
     rezultati['delez_izbranih_tock'] += [delez_izbranih_tock]
@@ -236,6 +268,10 @@ primerjava(10,10,10,1000)
 primerjava(5,5,10,400)
 
 def generiraj_primere(a,b,m, st_vseh):
+    '''
+    generiranje primerov z različnimi močmi naključne množice in z različno razdelitvijo območja,
+    ter ponovitev 1. modela j- krat za vsako moč naključne množice
+    '''
     # a in b sta največji vrednosti na x in y osi
     # m je število delitev intervala od 0 do a in od 0 do b
     # najvecje st_vseh elementov v množici S
@@ -252,6 +288,9 @@ def generiraj_primere(a,b,m, st_vseh):
 
 #2. METODA:
 def podmnozica_nakljucne_mnozice_krog(mnozica, k):
+    '''
+    funkcija izbira k naključnih točk iz naključno generinane množice
+    '''
 
     seznam = []
     while len(seznam) < k:
@@ -263,6 +302,10 @@ def podmnozica_nakljucne_mnozice_krog(mnozica, k):
     return(seznam)
 
 def tezisce_vzorca(mnozica):
+    '''
+    izračun povprečnih vrednosti koordinat x in y vseh točk v množici
+    '''
+
     vsota_x = 0
     vsota_y = 0
     for i in mnozica:
@@ -273,6 +316,9 @@ def tezisce_vzorca(mnozica):
     return([povprecje_x, povprecje_y])
 
 def polmer(mnozica, tezisce_vzorca):
+    '''
+    funkcija določi polmer, kot razdaljo najbolj oddaljene točke množice do težišča
+    '''
     razdalja = 0
     for i in mnozica:
         razdalja_tocke = math.sqrt((i.x - tezisce_vzorca[0])**2 + (i.y - tezisce_vzorca[1])**2)
@@ -283,15 +329,27 @@ def polmer(mnozica, tezisce_vzorca):
     return(razdalja)
 
 def ploscina_kroga(polmer):
+    '''
+    izračun ploščine kroga po znani formuli
+    '''
     ploscina = math.pi * polmer**2
     return(ploscina)
 
 def obseg_kroga(polmer):
+    '''
+    izračun obsega kroga po znani formuli
+    '''
     obseg = 2 * math.pi * polmer
     return(obseg)
 
 
 def primerjava_s_krogom(a,b,st_vseh):
+   '''
+    izračun eksaktne konveksne lupine naključne množice, njeno ploščino in obseg -> 
+    izračun težišča in polmera kroga in izračun njgovega obsega in ploščine
+    izračun relativna napaka med obsegom/ploščino eksaktne lupine in obsegom/ploščino kroga
+    '''
+
     mnozica = nakljucna_mnozica(st_vseh,a,b)
     kon_lup_eksaktna = konveksna_lupina(mnozica, len(mnozica))
     ploscina_eksaktna = ploscina(kon_lup_eksaktna)
@@ -333,6 +391,10 @@ def generiraj_primere_za_krog(a,b,st_vseh):
 #BOLJŠI ALGORITEM ZA KROG
 
 def krog_boljsi_algoritem(a,b,st_vseh, k):
+    '''
+    podobna funkcija kot prva funkcija za krog, le da namesto izračuna težišča in polmera za celotno naključno množico, ta funkcija izračuna
+    težišče in polmer naključne podmnožice naključno generirane množice
+    '''
     mnozica = nakljucna_mnozica(st_vseh,a,b)
     podmnozica = podmnozica_nakljucne_mnozice_krog(mnozica,k )
     kon_lup_eksaktna = konveksna_lupina(mnozica, len(mnozica))
